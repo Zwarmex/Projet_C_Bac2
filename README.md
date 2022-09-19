@@ -6,3 +6,6 @@ Faire deux fonctions :
 
 Afficher le meilleur S1 :
 si le deuxième S1 est meilleur que le premier, il va ecraser le premier S1, sinon on garde le S1
+
+
+Créer une structure "Voiture" avec (id, temps)
