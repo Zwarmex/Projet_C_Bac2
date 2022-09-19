@@ -9,3 +9,8 @@ si le deuxième S1 est meilleur que le premier, il va ecraser le premier S1, sin
 
 
 Créer une structure "Voiture" avec (id, temps)
+
+
+# Pour le rapport (25% des points, 1 dizaines de pages)
+
+  - Faire un beau plan de l'application
