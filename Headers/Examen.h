@@ -5,5 +5,7 @@
 	
 	int MillisecondsToSeconds(int ms);
 	int SecondsToMinutes(int secs);
+	struct Car;
+	struct Car CarBuilder(int arrayIdCars);
 	
 #endif
