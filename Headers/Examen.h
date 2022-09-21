@@ -6,6 +6,9 @@
 	int MillisecondsToSeconds(int ms);
 	int SecondsToMinutes(int secs);
 	struct Car;
-	struct Car CarBuilder(int arrayIdCars);
-	
+	struct Car CarBuilder(int arrayId[]);
+	void PrintCarTurnTiming(struct Car car);
+	int* BestTimeFromMS(int ms);
+	int MinutesToHours(int min);
+
 #endif
