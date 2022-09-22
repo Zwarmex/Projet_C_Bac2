@@ -21,8 +21,8 @@ int main()
 {
 
 	// Initialisation of variables
-	int upperTimeMaxMS = 45000, lowerTimeMinMS = 25000, arrayCarsId[NUMBEROFCARS] = {44, 63, 1, 11, 55, 16, 4, 3, 14, 31, 10, 22, 5, 18, 6, 23, 77, 24, 47, 9},
-	sprint = 0;
+	int upperTimeMaxMS = 45000, lowerTimeMinMS = 25000, boolSprint = 0, 
+	arrayCarsId[NUMBEROFCARS] = {44, 63, 1, 11, 55, 16, 4, 3, 14, 31, 10, 22, 5, 18, 6, 23, 77, 24, 47, 9};
 
 	// Put seed number in rand
 	srand(time(NULL));
@@ -31,11 +31,11 @@ int main()
 	struct Car arrayCars[] = {CarBuilder(arrayCarsId)};
 
 	// If cars testing
-	if (!sprint)
+	if (!boolSprint)
 	{
 		// While true continue turn testing
 		int boolContinueTesting = 1;
-		while (boolContinueTesting)
+		while (boolContinueTesting && !arrayCars[0].state)
 		{
 
 			// Reset the time  of the circuit of the car
@@ -68,6 +68,17 @@ int main()
 
 			PrintBestTimeWithText(arrayCars[0].id, arrayCars[0].turnTimeMS, "Turn");
 			boolContinueTesting =  rand() % 2;
+
+			if((rand() % 15) == 1)
+			{
+
+				arrayCars[0] = EndOfSession(arrayCars[0]);
+			}
+			if((rand() % 15) == 1)
+			{
+
+				arrayCars[0] = EnterThePits(arrayCars[0]);
+			}
 		}
 	}
 
@@ -75,15 +86,32 @@ int main()
 	{
 		
 	}
-	
-	
+
 	
 
 	return 0;
 }
 
+
+struct Car EndOfSession(struct Car car)
+{
+	
+	car.state = 1;
+	printf("Car %d : Out.\n", car.id);
+	return car;
+}
+
+struct Car EnterThePits(struct Car car)
+{
+	
+	car.state = 2;
+	printf("Car %d : P.\n", car.id);
+	return car;
+}
+
 void PrintBestTimeWithText(int id, int timeMS, char sent[])
 {
+
 	int *bestTimeExpr = BestTimeFromMS(timeMS);
 	switch(bestTimeExpr[0])
 	{
@@ -108,20 +136,21 @@ void PrintBestTimeWithText(int id, int timeMS, char sent[])
 
 int* BestTimeFromMS(int ms)
 {
+
 	int static bestTime[2] = {0, 0};
-	if (ms > 2000)
+	if (ms >= 2000)
 	{
 
 		bestTime[0] = 1;
 		bestTime[1] = MillisecondsToSeconds(ms);
 	}
-	if (bestTime[1] > 120)
+	if (bestTime[1] >= 120)
 	{
 
 		bestTime[0] = 2;
 		bestTime[1] = SecondsToMinutes(bestTime[1]);
 	}
-	if (bestTime[1] > 120)
+	if (bestTime[1] >= 120)
 	{
 
 		bestTime[0] = 3;

@@ -10,5 +10,8 @@
 	void PrintBestTimeWithText(int id, int timeMS, char sent[]);
 	int* BestTimeFromMS(int ms);
 	int MinutesToHours(int min);
+	struct Car EndOfSession(struct Car car);
+	struct Car EnterThePits(struct Car car);
+
 
 #endif
