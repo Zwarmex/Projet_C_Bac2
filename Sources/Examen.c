@@ -33,40 +33,41 @@ int main()
 	// If cars testing
 	if (!sprint)
 	{
-		// While true continue testing
+		// While true continue turn testing
 		int boolContinueTesting = 1;
 		while (boolContinueTesting)
 		{
 
 			// Reset the time  of the circuit of the car
-			printf("La voiture test le circuit.\n");
 			arrayCars[0].turnTimeMS = 0;
+			// For each sections
 			for (int i = 0; i < LENGTHARRAY(arrayCars[0].timeCircuitMS); ++i)
 			{
 
-				arrayCars[0].timeCircuitMS[i] = (rand() % (upperTimeMaxMS - lowerTimeMinMS + 1)) + lowerTimeMinMS;			
+				arrayCars[0].timeCircuitMS[i] = (rand() % (upperTimeMaxMS - lowerTimeMinMS + 1)) + lowerTimeMinMS;
+				// if the car is doing a better time 
 				if (arrayCars[0].bestTimeCircuitMS[i] == 0 || arrayCars[0].bestTimeCircuitMS[i] > arrayCars[0].timeCircuitMS[i])
 				{
 
 					arrayCars[0].bestTimeCircuitMS[i] = arrayCars[0].timeCircuitMS[i];
-					char* sectionAndSentence = malloc(sizeof("the section has recorded a new best time") + sizeof(int));
+					char* sectionAndSentence = malloc(sizeof("S a new best time") + sizeof(int));
 					
-					strcpy(sectionAndSentence, "the section ");
+					strcpy(sectionAndSentence, "S");
 					char sectionNumber[] = {i+1+'0'};
 					strcat(sectionAndSentence, sectionNumber);
-					strcat(sectionAndSentence, " has recorded a new best time");
+					strcat(sectionAndSentence, " new best time");
 
-					PrintCarTurnTiming(arrayCars[0].id, arrayCars[0].bestTimeCircuitMS[i] , sectionAndSentence);
+					PrintBestTimeWithText(arrayCars[0].id, arrayCars[0].bestTimeCircuitMS[i] , sectionAndSentence);
 					
 					free(sectionAndSentence);
 				}
 
+				// Keep the time of the circuit
 				arrayCars[0].turnTimeMS += arrayCars[0].timeCircuitMS[i];
 			}
 
-			PrintCarTurnTiming(arrayCars[0].id, arrayCars[0].turnTimeMS, "time for the whole turn");
-			// boolContinueTesting =  rand() % 2;
-			boolContinueTesting = 0;
+			PrintBestTimeWithText(arrayCars[0].id, arrayCars[0].turnTimeMS, "Turn");
+			boolContinueTesting =  rand() % 2;
 		}
 	}
 
@@ -81,7 +82,7 @@ int main()
 	return 0;
 }
 
-void PrintCarTurnTiming(int id, int timeMS, char sent[])
+void PrintBestTimeWithText(int id, int timeMS, char sent[])
 {
 	int *bestTimeExpr = BestTimeFromMS(timeMS);
 	switch(bestTimeExpr[0])
