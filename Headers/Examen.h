@@ -7,7 +7,7 @@
 	int SecondsToMinutes(int secs);
 	struct Car;
 	struct Car CarBuilder(int arrayId[]);
-	void PrintCarTurnTiming(struct Car car);
+	void PrintCarTurnTiming(int id, int timeMS, char sent[]);
 	int* BestTimeFromMS(int ms);
 	int MinutesToHours(int min);
 

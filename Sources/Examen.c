@@ -20,37 +20,53 @@ struct Car
 int main()
 {
 
+	// Initialisation of variables
 	int upperTimeMaxMS = 45000, lowerTimeMinMS = 25000, arrayCarsId[NUMBEROFCARS] = {44, 63, 1, 11, 55, 16, 4, 3, 14, 31, 10, 22, 5, 18, 6, 23, 77, 24, 47, 9},
-	boolQualification = 0;
+	sprint = 0;
 
+	// Put seed number in rand
 	srand(time(NULL));
 	
+	// Create array of cars
 	struct Car arrayCars[] = {CarBuilder(arrayCarsId)};
 
-	if (!boolQualification)
+	// If cars testing
+	if (!sprint)
 	{
-
+		// While true continue testing
 		int boolContinueTesting = 1;
 		while (boolContinueTesting)
 		{
+
+			// Reset the time  of the circuit of the car
 			printf("La voiture test le circuit.\n");
 			arrayCars[0].turnTimeMS = 0;
 			for (int i = 0; i < LENGTHARRAY(arrayCars[0].timeCircuitMS); ++i)
 			{
 
-				arrayCars[0].timeCircuitMS[i] = (rand() % (upperTimeMaxMS - lowerTimeMinMS + 1)) + lowerTimeMinMS;
-				printf("Temps S%d: %d milliseconds (%d seconds)\n", i+1, arrayCars[0].timeCircuitMS[i], MillisecondsToSeconds(arrayCars[0].timeCircuitMS[i]));
-				
+				arrayCars[0].timeCircuitMS[i] = (rand() % (upperTimeMaxMS - lowerTimeMinMS + 1)) + lowerTimeMinMS;			
 				if (arrayCars[0].bestTimeCircuitMS[i] == 0 || arrayCars[0].bestTimeCircuitMS[i] > arrayCars[0].timeCircuitMS[i])
 				{
 
 					arrayCars[0].bestTimeCircuitMS[i] = arrayCars[0].timeCircuitMS[i];
+					char* sectionAndSentence = malloc(sizeof("the section has recorded a new best time") + sizeof(int));
+					
+					strcpy(sectionAndSentence, "the section ");
+					char sectionNumber[] = {i+1+'0'};
+					strcat(sectionAndSentence, sectionNumber);
+					strcat(sectionAndSentence, " has recorded a new best time");
+
+					PrintCarTurnTiming(arrayCars[0].id, arrayCars[0].bestTimeCircuitMS[i] , sectionAndSentence);
+					
+					free(sectionAndSentence);
 				}
 
 				arrayCars[0].turnTimeMS += arrayCars[0].timeCircuitMS[i];
 			}
-			PrintCarTurnTiming(arrayCars[0]);
-			boolContinueTesting =  rand() % 2;
+
+			PrintCarTurnTiming(arrayCars[0].id, arrayCars[0].turnTimeMS, "time for the whole turn");
+			// boolContinueTesting =  rand() % 2;
+			boolContinueTesting = 0;
 		}
 	}
 
@@ -65,26 +81,26 @@ int main()
 	return 0;
 }
 
-void PrintCarTurnTiming(struct Car car)
+void PrintCarTurnTiming(int id, int timeMS, char sent[])
 {
-	int *bestTimeExpr = BestTimeFromMS(car.turnTimeMS);
+	int *bestTimeExpr = BestTimeFromMS(timeMS);
 	switch(bestTimeExpr[0])
 	{
 
 		case 1:
-			printf("Car %d : Time for the whole turn : %d seconds.\n", car.id, bestTimeExpr[1]);
+			printf("Car %d : %s : %d seconds.\n", id, sent, bestTimeExpr[1]);
 		break;
 
 		case 2:
-			printf("Car %d : Time for the whole turn : %d minutes.\n", car.id, bestTimeExpr[1]);
+			printf("Car %d : %s : %d minutes.\n", id, sent, bestTimeExpr[1]);
 		break;
 
 		case 3:
-			printf("Car %d : Time for the whole turn : %d hours.\n", car.id, bestTimeExpr[1]);
+			printf("Car %d : %s : %d hours.\n", id, sent, bestTimeExpr[1]);
 		break;
 
 		default:
-			printf("Car %d : Time for the whole turn : %d milliseconds.\n", car.id, car.turnTimeMS);
+			printf("Car %d : %s : %d milliseconds.\n", id, sent, timeMS);
 	}
 
 }
@@ -141,10 +157,15 @@ struct Car CarBuilder(int arrayId[])
 	{
 
 		arrayCars[i].id = arrayId[i];
-		// arrayCars[i].bestTimeCircuitMS;
 		arrayCars[i].turnTimeMS = 0;
+		arrayCars[i].position = 0; // For later
 		arrayCars[i].state = 0; // Ready to starting
-		// printf("Car built n° %d :\nCar number : %d\n\n", i, arrayCars[i].id);
+		for (int j = 0; j < LENGTHARRAY(arrayCars[i].timeCircuitMS); j++)
+		{
+			arrayCars[i].timeCircuitMS[j] = 0;
+			arrayCars[i].bestTimeCircuitMS[j] = 0;
+		}
+		
 	}
 
 	return *arrayCars;
