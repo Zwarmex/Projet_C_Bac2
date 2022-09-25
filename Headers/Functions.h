@@ -13,5 +13,6 @@
 	struct Car EndOfSession(struct Car car);
 	struct Car EnterThePits(struct Car car);
 
+	#include "../Sources/Functions.c"
 
 #endif

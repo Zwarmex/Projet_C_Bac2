@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include <string.h>
-#include "../Headers/Examen.h"
+#include "Headers/Functions.h"
 #define LENGTHARRAY(array) (sizeof(array)/sizeof(*array))
 #define NUMBEROFCARS 20
 
