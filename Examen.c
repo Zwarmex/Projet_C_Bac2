@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include <string.h>
+#include <unistd.h>
 #include "Headers/Functions.h"
 #define LENGTHARRAY(array) (sizeof(array)/sizeof(*array))
 #define NUMBEROFCARS 20
@@ -45,6 +46,9 @@ int main()
 			{
 
 				arrayCars[0].timeCircuitMS[i] = (rand() % (upperTimeMaxMS - lowerTimeMinMS + 1)) + lowerTimeMinMS;
+				
+				// sleep(MillisecondsToSeconds(arrayCars[0].timeCircuitMS[i]));
+				
 				// if the car is doing a better time 
 				if (arrayCars[0].bestTimeCircuitMS[i] == 0 || arrayCars[0].bestTimeCircuitMS[i] > arrayCars[0].timeCircuitMS[i])
 				{
