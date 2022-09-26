@@ -29,7 +29,7 @@ int main()
 	srand(time(NULL));
 	
 	// Create array of cars
-	struct Car arrayCars[] = {CarBuilder(arrayCarsId)};
+	struct Car *arrayCars = CarBuilder(arrayCarsId);
 
 	// If cars testing
 	if (!boolSprint)
@@ -182,10 +182,10 @@ int MinutesToHours(int min)
 	return	min/60;
 }
 
-struct Car CarBuilder(int arrayId[])
+struct Car *CarBuilder(int arrayId[])
 {
 
-	struct Car arrayCars[NUMBEROFCARS];
+	static struct Car arrayCars[NUMBEROFCARS];
 
 	for (int i = 0; i < NUMBEROFCARS; i++)
 	{
@@ -202,5 +202,5 @@ struct Car CarBuilder(int arrayId[])
 		
 	}
 
-	return *arrayCars;
+	return arrayCars;
 }
