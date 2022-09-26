@@ -6,6 +6,8 @@
 #define LENGTHARRAY(array) (sizeof(array)/sizeof(*array))
 #define NUMBEROFCARS 20
 
+//test 
+
 struct Car
 {
 
