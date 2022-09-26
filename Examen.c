@@ -91,7 +91,15 @@ int main()
 		
 	}
 
+	FILE *pointerFileScore = fopen("score.txt", "w");
+
+	for (int i = 0; i < NUMBEROFCARS; i++)
+	{
+		fprintf(pointerFileScore, "Car : %d -> Turn : %d\n", arrayCars[i].id, arrayCars[i].turnTimeMS);
+	}
 	
+
+	fclose(pointerFileScore);
 
 	return 0;
 }
