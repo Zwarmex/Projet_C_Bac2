@@ -1,6 +1,7 @@
 // If the file hasn't been include 
 #ifndef function
 // You can include the file
+// test juju
 #define function
 	
 	int MillisecondsToSeconds(int ms);
