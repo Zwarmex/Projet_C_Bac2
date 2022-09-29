@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include <string.h>
+#include <unistd.h>
 #include "Headers/Functions.h"
 #define LENGTHARRAY(array) (sizeof(array)/sizeof(*array))
 #define NUMBEROFCARS 20
@@ -28,7 +29,7 @@ int main()
 	srand(time(NULL));
 	
 	// Create array of cars
-	struct Car arrayCars[] = {CarBuilder(arrayCarsId)};
+	struct Car *arrayCars = CarBuilder(arrayCarsId);
 
 	// If cars testing
 	if (!boolSprint)
@@ -45,6 +46,9 @@ int main()
 			{
 
 				arrayCars[0].timeCircuitMS[i] = (rand() % (upperTimeMaxMS - lowerTimeMinMS + 1)) + lowerTimeMinMS;
+				
+				// sleep(MillisecondsToSeconds(arrayCars[0].timeCircuitMS[i]));
+				
 				// if the car is doing a better time 
 				if (arrayCars[0].bestTimeCircuitMS[i] == 0 || arrayCars[0].bestTimeCircuitMS[i] > arrayCars[0].timeCircuitMS[i])
 				{
@@ -87,7 +91,15 @@ int main()
 		
 	}
 
+	FILE *pointerFileScore = fopen("score.txt", "w");
+
+	for (int i = 0; i < NUMBEROFCARS; i++)
+	{
+		fprintf(pointerFileScore, "Car : %d -> Turn : %d\n", arrayCars[i].id, arrayCars[i].turnTimeMS);
+	}
 	
+
+	fclose(pointerFileScore);
 
 	return 0;
 }
@@ -178,10 +190,10 @@ int MinutesToHours(int min)
 	return	min/60;
 }
 
-struct Car CarBuilder(int arrayId[])
+struct Car *CarBuilder(int arrayId[])
 {
 
-	struct Car arrayCars[NUMBEROFCARS];
+	static struct Car arrayCars[NUMBEROFCARS];
 
 	for (int i = 0; i < NUMBEROFCARS; i++)
 	{
@@ -198,5 +210,5 @@ struct Car CarBuilder(int arrayId[])
 		
 	}
 
-	return *arrayCars;
+	return arrayCars;
 }
