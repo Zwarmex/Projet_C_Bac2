@@ -13,7 +13,8 @@
 	int MinutesToHours(int min);
 	struct Car EndOfSession(struct Car car);
 	struct Car EnterThePits(struct Car car);
-
+	void DoFreeTry(struct Car car);
+	
 	#include "../Sources/Functions.c"
 
 #endif
