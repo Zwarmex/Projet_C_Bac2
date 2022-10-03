@@ -122,7 +122,7 @@ void DoFreeTry(struct Car *car)
 				char* sectionAndSentence = malloc(sizeof("S a new best time") + sizeof(int));
 				
 				strcpy(sectionAndSentence, "S");
-				char sectionNumber[2] = {i+1+'0'};
+				char sectionNumber[2] = {(i+1)+'0'};
 				strcat(sectionAndSentence, sectionNumber);
 				strcat(sectionAndSentence, " new best time");
 
