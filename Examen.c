@@ -9,7 +9,7 @@ int main() // Add boolClassicWeekEnd in arg
 {
 
 	// Initialisation of variables
-	int boolSprint = 0, boolClassicWeekEnd = 1, pid,
+	int boolSprint = 0, boolClassicWeekEnd = 1, pidFork,
 	arrayCarsId[NUMBEROFCARS] = {44, 63, 1, 11, 55, 16, 4, 3, 14, 31, 10, 22, 5, 18, 6, 23, 77, 24, 47, 9};
 
 	// Put seed number in rand
@@ -20,17 +20,17 @@ int main() // Add boolClassicWeekEnd in arg
 	
 	for (int i = 0; i < NUMBEROFCARS; i++)
 	{
-		pid = fork();
+		pidFork = fork();
 
 		// Fork Error
-		if (pid == -1)
+		if (pidFork == -1)
         {
 			perror("fork error");
             exit(EXIT_FAILURE);
 		}
 		
 		// Child (a car)
-		if (pid == 0)
+		if (pidFork == 0)
         {
 			if (boolClassicWeekEnd)
 			{
