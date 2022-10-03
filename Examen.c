@@ -17,27 +17,47 @@ int main() // Add boolClassicWeekEnd in arg
 	
 	// Create array of cars
 	struct Car *arrayCars = CarBuilder(arrayCarsId);
-	if (boolClassicWeekEnd)
-	{
-
-		printf("Friday's morning : Free Try\n\n");
-		DoFreeTry(&arrayCars[0]);
-		printf("\nFriday's afternoon : Free Try\n\n");
-		DoFreeTry(&arrayCars[0]);
-		printf("\nSaturday's morning : Free Try\n\n");
-		DoFreeTry(&arrayCars[0]);
-
-	}
 	
-	// If cars testing
-	if (!boolSprint)
-	{
-		
-	}
+	int pid;
 
-	else
+	for (int i = 0; i < NUMBEROFCARS; i++)
 	{
+		pid = fork();
+
+		// Fork Error
+		if (pid == -1)
+        {
+			perror("fork error");
+            exit(EXIT_FAILURE);
+		}
 		
+		// Child (a car)
+		if (pid == 0)
+        {
+			if (boolClassicWeekEnd)
+			{
+				printf("Friday's morning : Free Try\n\n");
+				DoFreeTry(&arrayCars[i]);
+				printf("\nFriday's afternoon : Free Try\n\n");
+				DoFreeTry(&arrayCars[i]);
+				printf("\nSaturday's morning : Free Try\n\n");
+				DoFreeTry(&arrayCars[i]);
+			}	
+
+			// If cars testing
+			if (!boolSprint)
+			{
+				
+			}
+
+			else
+			{
+				
+			}
+
+			// Child have to not make another child
+			break;
+		}
 	}
 
 	FILE *pointerFileScore = fopen("Results/score.txt", "w");
