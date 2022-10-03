@@ -7,22 +7,21 @@ struct Car
 	int turnTimeMS;
 	int position; // For later
 	int state; 
+	int lastLap;
 };
 
-struct Car EndOfSession(struct Car car)
+void EndOfSession(struct Car *car)
 {
 	
-	car.state = 1;
-	printf("Car %d : Out.\n", car.id);
-	return car;
+	car->state = 1;
+	printf("Car %d : Out.\n", car->id);
 }
 
-struct Car EnterThePits(struct Car car)
+void EnterThePits(struct Car *car)
 {
 	
-	car.state = 2;
-	printf("Car %d : P.\n", car.id);
-	return car;
+	car->state = 2;
+	printf("Car %d : P.\n", car->id);
 }
 
 void PrintBestTimeWithText(int id, int timeMS, char sent[])
@@ -117,29 +116,29 @@ struct Car *CarBuilder(int arrayId[])
 	return arrayCars;
 }
 
-void DoFreeTry(struct Car car)
+void DoFreeTry(struct Car *car)
 {
 	// While true continue turn testing
 	int boolContinueTesting = 1, upperTimeMaxMS = 45000, lowerTimeMinMS = 25000;
-	while (boolContinueTesting && !car.state)
+	while (boolContinueTesting && !car->state)
 	{
 
 		// Reset the time  of the circuit of the car
-		car.turnTimeMS = 0;
+		car->turnTimeMS = 0;
 		// For each sections
-		for (int i = 0; i < LENGTHARRAY(car.timeCircuitMS); ++i)
+		for (int i = 0; i < LENGTHARRAY(car->timeCircuitMS); ++i)
 		{
 
-			car.timeCircuitMS[i] = (rand() % (upperTimeMaxMS - lowerTimeMinMS + 1)) + lowerTimeMinMS;
+			car->timeCircuitMS[i] = (rand() % (upperTimeMaxMS - lowerTimeMinMS + 1)) + lowerTimeMinMS;
 			
-			// sleep(MillisecondsToSeconds(car.timeCircuitMS[i]));
+			// sleep(MillisecondsToSeconds(car->timeCircuitMS[i]));
 			
 			// if the car is doing a better time 
 
-			if (car.bestTimeCircuitMS[i] == 0 || car.bestTimeCircuitMS[i] > car.timeCircuitMS[i])
+			if (car->bestTimeCircuitMS[i] == 0 || car->bestTimeCircuitMS[i] > car->timeCircuitMS[i])
 			{
 
-				car.bestTimeCircuitMS[i] = car.timeCircuitMS[i];
+				car->bestTimeCircuitMS[i] = car->timeCircuitMS[i];
 				char* sectionAndSentence = malloc(sizeof("S a new best time") + sizeof(int));
 				
 				strcpy(sectionAndSentence, "S");
@@ -147,27 +146,27 @@ void DoFreeTry(struct Car car)
 				strcat(sectionAndSentence, sectionNumber);
 				strcat(sectionAndSentence, " new best time");
 
-				PrintBestTimeWithText(car.id, car.bestTimeCircuitMS[i] , sectionAndSentence);
+				PrintBestTimeWithText(car->id, car->bestTimeCircuitMS[i] , sectionAndSentence);
 				
 				free(sectionAndSentence);
 			}
 
 			// Keep the time of the circuit
-			car.turnTimeMS += car.timeCircuitMS[i];
+			car->turnTimeMS += car->timeCircuitMS[i];
 		}
 
-		PrintBestTimeWithText(car.id, car.turnTimeMS, "Turn");
+		PrintBestTimeWithText(car->id, car->turnTimeMS, "Turn");
 		boolContinueTesting =  rand() % 2;
 
 		if((rand() % 15) == 1)
 		{
 
-			car = EndOfSession(car);
+			EndOfSession(car);
 		}
 		if((rand() % 15) == 1)
 		{
 
-			car = EnterThePits(car);
+			EnterThePits(car);
 		}
 	}
 }

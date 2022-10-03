@@ -21,11 +21,11 @@ int main() // Add boolClassicWeekEnd in arg
 	{
 
 		printf("Friday's morning : Free Try\n\n");
-		DoFreeTry(arrayCars[0]);
+		DoFreeTry(&arrayCars[0]);
 		printf("\nFriday's afternoon : Free Try\n\n");
-		DoFreeTry(arrayCars[0]);
+		DoFreeTry(&arrayCars[0]);
 		printf("\nSaturday's morning : Free Try\n\n");
-		DoFreeTry(arrayCars[0]);
+		DoFreeTry(&arrayCars[0]);
 
 	}
 	
@@ -40,7 +40,7 @@ int main() // Add boolClassicWeekEnd in arg
 		
 	}
 
-	FILE *pointerFileScore = fopen("score.txt", "w");
+	FILE *pointerFileScore = fopen("Results/score.txt", "w");
 
 	for (int i = 0; i < NUMBEROFCARS; i++)
 	{
