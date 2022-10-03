@@ -8,6 +8,7 @@ struct Car
 	int position; // For later
 	int state; 
 	int lastTurnMS;
+	int totalTurnMS;
 };
 
 void EndOfSession(struct Car *car)
@@ -105,6 +106,7 @@ struct Car *CarBuilder(int arrayId[])
 		arrayCars[i].turnTimeMS = 0;
 		arrayCars[i].position = 0; // For later
 		arrayCars[i].lastTurnMS = 0;
+		arrayCars[i].totalTurnMS = 0;
 		arrayCars[i].state = 0; // Ready to starting
 		for (int j = 0; j < LENGTHARRAY(arrayCars[i].timeCircuitMS); j++)
 		{
@@ -139,10 +141,11 @@ void DoFreeTry(struct Car *car)
 	
 	// While true continue turn testing
 	int boolContinueTesting = 1, upperTimeMaxMS = 45000, lowerTimeMinMS = 25000;
+	
+	ResetCar(car);
+	
 	while (boolContinueTesting && !car->state)
 	{
-
-		// Reset the time  of the circuit of the car
 		car->turnTimeMS = 0;
 		// For each sections
 		for (int i = 0; i < LENGTHARRAY(car->timeCircuitMS); ++i)
@@ -174,18 +177,22 @@ void DoFreeTry(struct Car *car)
 			car->turnTimeMS += car->timeCircuitMS[i];
 		}
 
+		car->totalTurnMS += car->turnTimeMS;
+
 		PrintBestTimeWithText(car->id, car->turnTimeMS, "Turn");
 		boolContinueTesting =  rand() % 2;
 
 		if((rand() % 15) == 1)
 		{
-
 			EndOfSession(car);
 		}
+
 		if((rand() % 15) == 1)
 		{
-
 			EnterThePits(car);
 		}
 	}
+
+	PrintBestTimeWithText(car->id, car->totalTurnMS, "Total");
+	car->totalTurnMS = 0;
 }

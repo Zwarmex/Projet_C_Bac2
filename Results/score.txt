@@ -1,4 +1,4 @@
-Car : 44 -> Turn : 113621
+Car : 44 -> Turn : 88808
 Car : 63 -> Turn : 0
 Car : 1 -> Turn : 0
 Car : 11 -> Turn : 0
