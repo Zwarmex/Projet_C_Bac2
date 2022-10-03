@@ -14,6 +14,8 @@
 	struct Car EndOfSession(struct Car car);
 	struct Car EnterThePits(struct Car car);
 
+	#define NUMBEROFCARS 20
+	#define LENGTHARRAY(array) (sizeof(array)/sizeof(*array))
 	#include "../Sources/Functions.c"
 
 #endif
