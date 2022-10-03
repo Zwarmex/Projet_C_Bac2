@@ -27,71 +27,29 @@ void EnterThePits(struct Car *car)
 
 void PrintBestTimeWithText(int id, int timeMS, char sent[])
 {
+	int hours = ((timeMS / 1000) / 3600), minutes = ((timeMS / 1000) - (3600 * hours)) / 60, seconds = ((timeMS / 1000) - (3600 * hours) - (minutes * 60));
 
-	int *bestTimeExpr = BestTimeFromMS(timeMS);
-	switch(bestTimeExpr[0])
-	{
 
-		case 1:
-			printf("Car %d : %s : %d seconds.\n", id, sent, bestTimeExpr[1]);
-		break;
+    if (hours)
+    {
+        printf("Car %d : %s : %d hours %d minutes %d seconds.\n", id, sent, hours, minutes, seconds);
+        
+    }
 
-		case 2:
-			printf("Car %d : %s : %d minutes.\n", id, sent, bestTimeExpr[1]);
-		break;
+    else if(minutes)
+    {
+       	printf("Car %d : %s : %d minutes %d seconds.\n", id, sent, minutes, seconds);
+    }
 
-		case 3:
-			printf("Car %d : %s : %d hours.\n", id, sent, bestTimeExpr[1]);
-		break;
+    else if(seconds)
+    {
+        printf("Car %d : %s : %d seconds.\n", id, sent, seconds);
+    }
 
-		default:
-			printf("Car %d : %s : %d milliseconds.\n", id, sent, timeMS);
-	}
-
-}
-
-int* BestTimeFromMS(int ms)
-{
-
-	int static bestTime[2] = {0, 0};
-	if (ms >= 2000)
-	{
-
-		bestTime[0] = 1;
-		bestTime[1] = MillisecondsToSeconds(ms);
-	}
-	if (bestTime[1] >= 120)
-	{
-
-		bestTime[0] = 2;
-		bestTime[1] = SecondsToMinutes(bestTime[1]);
-	}
-	if (bestTime[1] >= 120)
-	{
-
-		bestTime[0] = 3;
-		bestTime[1] = MinutesToHours(bestTime[1]);
-	}
-	
-	return bestTime;
-}
-
-int MillisecondsToSeconds(int ms)
-{
-
-	return ms/1000;
-}
-
-int SecondsToMinutes(int secs)
-{
-
-	return secs/60;
-}
-
-int MinutesToHours(int min)
-{
-
-	return	min/60;
+    else
+    {
+        printf("Car %d : %s : %d milliseconds.\n", id, sent, timeMS);
+    }
 }
 
 struct Car *CarBuilder(int arrayId[])

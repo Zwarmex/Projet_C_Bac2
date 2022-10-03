@@ -9,7 +9,6 @@
 	struct Car;
 	struct Car *CarBuilder(int arrayId[]);
 	void PrintBestTimeWithText(int id, int timeMS, char sent[]);
-	int* BestTimeFromMS(int ms);
 	int MinutesToHours(int min);
 	void EndOfSession(struct Car *car);
 	void EnterThePits(struct Car *car);
