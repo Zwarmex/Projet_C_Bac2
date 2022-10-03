@@ -9,7 +9,7 @@ int main() // Add boolClassicWeekEnd in arg
 {
 
 	// Initialisation of variables
-	int boolSprint = 0, boolClassicWeekEnd = 1,
+	int boolSprint = 0, boolClassicWeekEnd = 1, pid,
 	arrayCarsId[NUMBEROFCARS] = {44, 63, 1, 11, 55, 16, 4, 3, 14, 31, 10, 22, 5, 18, 6, 23, 77, 24, 47, 9};
 
 	// Put seed number in rand
@@ -18,8 +18,6 @@ int main() // Add boolClassicWeekEnd in arg
 	// Create array of cars
 	struct Car *arrayCars = CarBuilder(arrayCarsId);
 	
-	int pid;
-
 	for (int i = 0; i < NUMBEROFCARS; i++)
 	{
 		pid = fork();

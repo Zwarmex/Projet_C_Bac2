@@ -1,0 +1,36 @@
+IPC :
+
+-> Message queues
+MQid = msgget(key, flag) :
+
+Ecrire un message : msgsnd(MQid, msg, count, flag)
+	-> msg : * sur une struct msg -> int type
+						   char[] msg
+	-> count : taille du char[] msg
+
+Lire un message : msgrcv(MQid, msg, maxcount, type, flag)
+	-> msg : * sur 1 structure user pour recevoir le message
+	-> macount : taille de [] msg
+	-> type : si 0 alors premier message si > 0 alors on prends le premier message du même type
+
+-> Shared memory (Projet) :
+SHMid = shmget(key, size, flag)
+	-> size : nombre de bytes de la région de la SM
+
+VADDR = shmat(SHMid, addr, flag)
+	-> addr = 0 pour laisser le système faire
+
+shmdt(VADDR) en fin de programme pour libérer la mémoire.
+
+-> Sémaphores :
+Une sémaphore - 1 valeur (int >= 0)
+		  - Une file d'attente associé au sémaphore.
+Quand un processus veut lire ou écrire il regarde la valeur du sémaphore et si il est >0,
+alors il le diminue et continue son programme et s'il est deja a 0 alors il sleep jusqu'a ce que le sémaphore revient a 1.
+
+SEMid = semget(key, count, flag)
+	-> count : nombre de sémaphores (on recevra un tableau de sémaphore)
+
+Pour augmenter ou diminuer la valeur : semop(SEMid, liste d'opération, count). C'est garantit ATOMIQUE.
+	-> liste d'opération : * sur un tableau d'opération.
+		-> opération : n° séma (indice), l'opération (+1 ou -1), flag.
