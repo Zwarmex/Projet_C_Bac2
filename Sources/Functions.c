@@ -7,7 +7,7 @@ struct Car
 	int turnTimeMS;
 	int position; // For later
 	int state; 
-	int lastLap;
+	int lastTurnMS;
 };
 
 void EndOfSession(struct Car *car)
@@ -104,6 +104,7 @@ struct Car *CarBuilder(int arrayId[])
 		arrayCars[i].id = arrayId[i];
 		arrayCars[i].turnTimeMS = 0;
 		arrayCars[i].position = 0; // For later
+		arrayCars[i].lastTurnMS = 0;
 		arrayCars[i].state = 0; // Ready to starting
 		for (int j = 0; j < LENGTHARRAY(arrayCars[i].timeCircuitMS); j++)
 		{
@@ -116,8 +117,26 @@ struct Car *CarBuilder(int arrayId[])
 	return arrayCars;
 }
 
+void ResetCar(struct Car *car)
+{
+	for (int i = 0; i < NUMBEROFCARS; i++)
+	{
+
+		car->turnTimeMS = 0;
+		car->position = 0; // For later
+		car->lastTurnMS = 0;
+		car->state = 0; // Ready to starting
+		for (int j = 0; j < LENGTHARRAY(car->timeCircuitMS); j++)
+		{
+			car->timeCircuitMS[j] = 0;
+			car->bestTimeCircuitMS[j] = 0;
+		}
+	}
+}
+
 void DoFreeTry(struct Car *car)
 {
+	
 	// While true continue turn testing
 	int boolContinueTesting = 1, upperTimeMaxMS = 45000, lowerTimeMinMS = 25000;
 	while (boolContinueTesting && !car->state)
