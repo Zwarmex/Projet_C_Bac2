@@ -3,20 +3,23 @@
 #include <time.h>
 #include <string.h>
 #include <unistd.h>
+#include <sys/shm.h>
+#include <sys/ipc.h>
+// #include <sys/modes.h>
 #include "Headers/Functions.h"
 
 int main() // Add boolClassicWeekEnd in arg
 {
 
 	// Initialisation of variables
-	int boolSprint = 0, boolClassicWeekEnd = 1, pidFork,
+	int boolSprint = 0, boolClassicWeekEnd = 1, pidFork, shmKey = 45,
 	arrayCarsId[NUMBEROFCARS] = {44, 63, 1, 11, 55, 16, 4, 3, 14, 31, 10, 22, 5, 18, 6, 23, 77, 24, 47, 9};
 
-	// Put seed number in rand
-	srand(time(NULL));
-	
 	// Create array of cars
 	struct Car *arrayCars = CarBuilder(arrayCarsId);
+
+	// Create shared memory
+	int shmID = shmget(shmKey, sizeof(int), IPC_CREAT);
 	
 	for (int i = 0; i < NUMBEROFCARS; i++)
 	{
@@ -62,7 +65,6 @@ int main() // Add boolClassicWeekEnd in arg
 
 	for (int i = 0; i < NUMBEROFCARS; i++)
 	{
-
 		fprintf(pointerFileScore, "Car : %d -> Turn : %d\n", arrayCars[i].id, arrayCars[i].turnTimeMS);
 	}
 	

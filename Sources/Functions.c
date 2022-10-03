@@ -27,21 +27,21 @@ void EnterThePits(struct Car *car)
 
 void PrintBestTimeWithText(int id, int timeMS, char sent[])
 {
-	int hours = ((timeMS / 1000) / 3600), minutes = ((timeMS / 1000) - (3600 * hours)) / 60, seconds = ((timeMS / 1000) - (3600 * hours) - (minutes * 60));
-
+	int hours = ((timeMS / 1000) / 3600), 
+	minutes = ((timeMS / 1000) - (3600 * hours)) / 60, 
+	seconds = ((timeMS / 1000) - (3600 * hours) - (minutes * 60));
 
     if (hours)
     {
         printf("Car %d : %s : %d hours %d minutes %d seconds.\n", id, sent, hours, minutes, seconds);
-        
     }
 
-    else if(minutes)
+    else if (minutes)
     {
        	printf("Car %d : %s : %d minutes %d seconds.\n", id, sent, minutes, seconds);
     }
 
-    else if(seconds)
+    else if (seconds)
     {
         printf("Car %d : %s : %d seconds.\n", id, sent, seconds);
     }
@@ -108,7 +108,9 @@ void DoFreeTry(struct Car *car)
 		// For each sections
 		for (int i = 0; i < LENGTHARRAY(car->timeCircuitMS); ++i)
 		{
-
+			// Put seed number in rand
+			srand(time(NULL));
+			
 			car->timeCircuitMS[i] = (rand() % (upperTimeMaxMS - lowerTimeMinMS + 1)) + lowerTimeMinMS;
 			
 			// sleep(MillisecondsToSeconds(car->timeCircuitMS[i]));
