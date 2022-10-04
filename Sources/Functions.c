@@ -96,7 +96,6 @@ void ResetCar(struct Car *car)
 
 void DoFreeTry(struct Car *car)
 {
-	
 	// While true continue turn testing
 	int boolContinueTesting = 1, upperTimeMaxMS = 45000, lowerTimeMinMS = 25000;
 	
@@ -116,7 +115,6 @@ void DoFreeTry(struct Car *car)
 			// sleep(MillisecondsToSeconds(car->timeCircuitMS[i]));
 			
 			// if the car is doing a better time 
-
 			if (car->bestTimeCircuitMS[i] == 0 || car->bestTimeCircuitMS[i] > car->timeCircuitMS[i])
 			{
 
@@ -138,7 +136,7 @@ void DoFreeTry(struct Car *car)
 		}
 
 		car->totalTurnMS += car->turnTimeMS;
-
+		
 		PrintBestTimeWithText(car->id, car->turnTimeMS, "Turn");
 		boolContinueTesting =  rand() % 2;
 

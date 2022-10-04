@@ -12,22 +12,18 @@ int main() // Add boolClassicWeekEnd in arg
 {
 
 	// Initialisation of variables
-	int boolSprint = 0, boolClassicWeekEnd = 1, pidFork, shmId = shmget(IPC_PRIVATE, SEGMENT_SIZE, IPC_CREAT | IPC_EXCL | S_IRUSR | S_IWUSR),
+	int boolSprint = 0, boolClassicWeekEnd = 1, pidFork, 
 	arrayCarsId[NUMBEROFCARS] = {44, 63, 1, 11, 55, 16, 4, 3, 14, 31, 10, 22, 5, 18, 6, 23, 77, 24, 47, 9};
-
-	int *shMem = (int *) shmat(shmId, NULL, 0), *shmData = (int*) 45;
-
-	memmove(shMem, shmData, sizeof( *shmData)+1);
-
-	printf("shm : %d\n", shMem);
 
 	// Create array of cars
 	struct Car *arrayCars = CarBuilder(arrayCarsId);
 
 	// Create shared memory
-	shmdt(shMem);
-    shmctl(shmId, IPC_RMID, 0);
-	return 0;
+	int shmId = shmget(IPC_PRIVATE, SEGMENT_SIZE, IPC_CREAT | IPC_EXCL | S_IRUSR | S_IWUSR);
+
+	// memmove(shMem, (int *) &shmData, sizeof(shmData));
+	int *shMem = (int *) shmat(shmId, NULL, 0);
+
 	for (int i = 0; i < NUMBEROFCARS; i++)
 	{
 		pidFork = fork();
@@ -77,6 +73,9 @@ int main() // Add boolClassicWeekEnd in arg
 	
 
 	fclose(pointerFileScore);
+		
+	shmdt(shMem);
+    shmctl(shmId, IPC_RMID, 0);
 
 	return 0;
 }
