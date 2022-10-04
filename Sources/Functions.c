@@ -107,8 +107,7 @@ void DoFreeTry(Car *car)
 		// For each sections
 		for (int i = 0; i < LENGTHARRAY(car->timeCircuitMS); ++i)
 		{
-			// Put seed number in rand
-			srand(time(NULL));
+
 			
 			car->timeCircuitMS[i] = (rand() % (upperTimeMaxMS - lowerTimeMinMS + 1)) + lowerTimeMinMS;
 			
@@ -138,6 +137,7 @@ void DoFreeTry(Car *car)
 		car->totalTurnMS += car->turnTimeMS;
 		
 		PrintBestTimeWithText(car->id, car->turnTimeMS, "Turn");
+
 		boolContinueTesting =  rand() % 2;
 
 		if((rand() % 15) == 1)
