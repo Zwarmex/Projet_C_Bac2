@@ -1,4 +1,4 @@
-struct Car
+typedef struct Car
 {
 
 	int id;
@@ -9,16 +9,16 @@ struct Car
 	int state; 
 	int lastTurnMS;
 	int totalTurnMS;
-};
+}Car;
 
-void EndOfSession(struct Car *car)
+void EndOfSession(Car *car)
 {
 	
 	car->state = 1;
 	printf("Car %d : Out.\n", car->id);
 }
 
-void EnterThePits(struct Car *car)
+void EnterThePits(Car *car)
 {
 	
 	car->state = 2;
@@ -52,10 +52,10 @@ void PrintBestTimeWithText(int id, int timeMS, char sent[])
     }
 }
 
-struct Car *CarBuilder(int arrayId[])
+Car *CarBuilder(int arrayId[])
 {
 
-	static struct Car arrayCars[NUMBEROFCARS];
+	static Car arrayCars[NUMBEROFCARS];
 
 	for (int i = 0; i < NUMBEROFCARS; i++)
 	{
@@ -77,7 +77,7 @@ struct Car *CarBuilder(int arrayId[])
 	return arrayCars;
 }
 
-void ResetCar(struct Car *car)
+void ResetCar(Car *car)
 {
 	for (int i = 0; i < NUMBEROFCARS; i++)
 	{
@@ -94,7 +94,7 @@ void ResetCar(struct Car *car)
 	}
 }
 
-void DoFreeTry(struct Car *car)
+void DoFreeTry(Car *car)
 {
 	// While true continue turn testing
 	int boolContinueTesting = 1, upperTimeMaxMS = 45000, lowerTimeMinMS = 25000;

@@ -1,18 +1,18 @@
 // If the file hasn't been include 
-#ifndef function
-// You can include the file
+#ifndef functions
 
-#define function
-	
+	// You can include the file
+	#define functions
+		
 	int MillisecondsToSeconds(int ms);
 	int SecondsToMinutes(int secs);
-	struct Car;
-	struct Car *CarBuilder(int arrayId[]);
+	typedef struct Car Car;
+	Car *CarBuilder(int arrayId[]);
 	void PrintBestTimeWithText(int id, int timeMS, char sent[]);
 	int MinutesToHours(int min);
-	void EndOfSession(struct Car *car);
-	void EnterThePits(struct Car *car);
-	void DoFreeTry(struct Car *car);
+	void EndOfSession(Car *car);
+	void EnterThePits(Car *car);
+	void DoFreeTry(Car *car);
 	
 	#define NUMBEROFCARS 20
 	#define LENGTHARRAY(array) (sizeof(array)/sizeof(*array))
