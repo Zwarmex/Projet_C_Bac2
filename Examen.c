@@ -12,14 +12,14 @@ int main() // Add boolClassicWeekEnd in arg
 {
 
 	// Initialisation of variables
-	int boolSprint = 0, boolClassicWeekEnd = 1, pidFork, 
+	int boolSprint = 0, boolClassicWeekEnd = 1, pidFork, shmSize = 64,
 	arrayCarsId[NUMBEROFCARS] = {44, 63, 1, 11, 55, 16, 4, 3, 14, 31, 10, 22, 5, 18, 6, 23, 77, 24, 47, 9};
 
 	// Create array of cars
 	struct Car *arrayCars = CarBuilder(arrayCarsId);
 
 	// Create shared memory
-	int shmId = shmget(IPC_PRIVATE, SEGMENT_SIZE, IPC_CREAT | IPC_EXCL | S_IRUSR | S_IWUSR);
+	int shmId = shmget(IPC_PRIVATE, shmSize, IPC_CREAT | IPC_EXCL | S_IRUSR | S_IWUSR);
 
 	// memmove(shMem, (int *) &shmData, sizeof(shmData));
 	int *shMem = (int *) shmat(shmId, NULL, 0);

@@ -16,7 +16,6 @@
 	
 	#define NUMBEROFCARS 20
 	#define LENGTHARRAY(array) (sizeof(array)/sizeof(*array))
-	#define SEGMENT_SIZE 0x6400
 	#include "../Sources/Functions.c"
 
 #endif
