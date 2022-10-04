@@ -18,4 +18,3 @@ Car : 77 -> Turn : 0
 Car : 24 -> Turn : 0
 Car : 47 -> Turn : 0
 Car : 9 -> Turn : 0
-3791
