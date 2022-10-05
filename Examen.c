@@ -14,27 +14,41 @@ int main() // Add boolClassicWeekEnd in arg
 {
 
 	// Initialisation of variables
-	int boolSprint = 0, boolClassicWeekEnd = 1, shmSize = sizeof(int) * NUMBEROFCARS, shmData[NUMBEROFCARS],
-	shmId = shmget(IPC_PRIVATE, shmSize, IPC_CREAT | 0775), *shMem = (int *) shmat(shmId, NULL, 0), 
-	arrayCarsId[NUMBEROFCARS] = {44, 63, 1, 11, 55, 16, 4, 3, 14, 31, 10, 22, 5, 18, 6, 23, 77, 24, 47, 9};
+	int boolSprint = 0, boolClassicWeekEnd = 1, shmSize = sizeof(int) * NUMBEROFCARS, shmData[NUMBEROFCARS], shmId,
+	arrayCarsId[NUMBEROFCARS] = {44, 63, 1, 11, 55};//, 16, 4, 3, 14, 31, 10, 22, 5, 18, 6, 23, 77, 24, 47, 9};
 
-	// Put seed number in rand
-	srand(time(NULL));
+	int *shMem;
+
+	if((shmId = shmget(IPC_PRIVATE, shmSize, IPC_CREAT | 0775)) < 0)
+	{
+		perror("shmget error ");
+		exit(EXIT_FAILURE);
+	} 
+	
+	if ((shMem = (int *) shmat(shmId, NULL, 0)) < 0)
+	{
+		perror("shmat error ");
+		exit(EXIT_FAILURE);
+	}
 
 	// Create array of cars
 	Car *arrayCars = CarBuilder(arrayCarsId);
 
-	// Do the race
+	// For each child
 	for (int i = 0; i < NUMBEROFCARS; i++)
 	{
+
 		int pidFork;
 		// Fork and check errors
-		if ((pidFork= fork()) == -1)
+		if ((pidFork = fork()) == -1)
         {
 			perror("fork error");
             exit(EXIT_FAILURE);
 		}
-		
+	
+		// Put seed number in rand with pid of the processus
+		srand(time(NULL) ^ (getpid()<<16));
+
 		// Child (a car)
 		if (pidFork == 0)
         {	
@@ -46,26 +60,24 @@ int main() // Add boolClassicWeekEnd in arg
 				DoFreeTry(&arrayCars[i]);
 				printf("\nSaturday's morning : Free Try\n\n");
 				DoFreeTry(&arrayCars[i]);
-				shmData[i] = arrayCars[i].totalTurnMS;
-				memmove(shMem + i, (int *) &shmData[i], sizeof(shmData[i]));
+				memcpy(&shMem[i], &arrayCars[i].totalTurnMS, sizeof(arrayCars[i].totalTurnMS));
 			}	
 			// Child have to not make another child
 			exit(EXIT_SUCCESS);
 		}
 	}
 
+	
+
+	// For all the children to be terminated
 	int waitRespons, waitStatus = 0;
-		
 	while ((waitRespons = wait(&waitStatus)) > 0);
 
 	for (int i = 0; i < NUMBEROFCARS; i++)
 	{
-		printf("\n\nshm : %d\n", shMem + i);
+		int *data = (int *) (&shMem[i]);
+		printf("\n\nshm : %d\n", *data);
 	}
-	
-	
-
-	
 
 	exit(EXIT_SUCCESS);
 	

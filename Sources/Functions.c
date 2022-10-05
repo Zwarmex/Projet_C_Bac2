@@ -94,9 +94,7 @@ void DoFreeTry(Car *car)
 		// For each sections
 		for (int i = 0; i < LENGTHARRAY(car->timeCircuitMS); ++i)
 		{
-			car->timeCircuitMS[i] = (rand() % (upperTimeMaxMS - lowerTimeMinMS + 1)) + lowerTimeMinMS;
-			
-			// sleep(MillisecondsToSeconds(car->timeCircuitMS[i]));
+			car->timeCircuitMS[i] = rand() % (upperTimeMaxMS - lowerTimeMinMS + 1) + lowerTimeMinMS;
 			
 			// if the car is doing a better time 
 			if (car->bestTimeCircuitMS[i] == 0 || car->bestTimeCircuitMS[i] > car->timeCircuitMS[i])
