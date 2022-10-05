@@ -15,7 +15,7 @@ int main() // Add boolClassicWeekEnd in arg
 
 	// Initialisation of variables
 	int boolSprint = 0, boolClassicWeekEnd = 1, pidFork, shmSize = sizeof(int)*NUMBEROFCARS, childrenPGID = 17000, shmData[NUMBEROFCARS],
-	shmId = shmget(IPC_PRIVATE, shmSize, IPC_CREAT | IPC_EXCL | S_IRUSR | S_IWUSR), *shMem = (int *) shmat(shmId, NULL, 0), 
+	shmId = shmget(IPC_PRIVATE, shmSize, IPC_CREAT | S_IRUSR | S_IWUSR), *shMem = (int *) shmat(shmId, NULL, 0), 
 	arrayCarsId[NUMBEROFCARS] = {44, 63, 1, 11, 55, 16, 4, 3, 14, 31, 10, 22, 5, 18, 6, 23, 77, 24, 47, 9};
 
 	// Put seed number in rand
@@ -60,10 +60,10 @@ int main() // Add boolClassicWeekEnd in arg
 
 	for (int i = 0; i < NUMBEROFCARS; i++)
 	{
-		/* code */
+		printf("\n\nshm : %d\n", *shMem);
 	}
 	
-	printf("\n\nshm : %d\n", *shMem);
+	
 
 	
 
