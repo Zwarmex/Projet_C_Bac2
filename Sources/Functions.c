@@ -13,13 +13,13 @@ typedef struct Car
 void EndOfSession(Car *car)
 {
 	car->state = 1;
-	printf("Car %d : Out.\n", car->id);
+	// printf("Car %d : Out.\n", car->id);
 }
 
 void EnterThePits(Car *car)
 {
 	car->state = 2;
-	printf("Car %d : P.\n", car->id);
+	// printf("Car %d : P.\n", car->id);
 }
 
 void PrintBestTimeWithText(int id, int timeMS, char sent[])
@@ -107,7 +107,7 @@ void DoFreeTry(Car *car)
 				strcat(sectionAndSentence, sectionNumber);
 				strcat(sectionAndSentence, " new best time");
 
-				PrintBestTimeWithText(car->id, car->bestTimeCircuitMS[i] , sectionAndSentence);
+				// PrintBestTimeWithText(car->id, car->bestTimeCircuitMS[i] , sectionAndSentence);
 				
 				free(sectionAndSentence);
 			}
@@ -118,7 +118,7 @@ void DoFreeTry(Car *car)
 
 		car->totalTurnMS += car->turnTimeMS;
 		
-		PrintBestTimeWithText(car->id, car->turnTimeMS, "Turn");
+		// PrintBestTimeWithText(car->id, car->turnTimeMS, "Turn");
 
 		boolContinueTesting =  rand() % 2;
 
@@ -133,5 +133,5 @@ void DoFreeTry(Car *car)
 		}
 	}
 
-	PrintBestTimeWithText(car->id, car->totalTurnMS, "Total");
+	// PrintBestTimeWithText(car->id, car->totalTurnMS, "Total");
 }

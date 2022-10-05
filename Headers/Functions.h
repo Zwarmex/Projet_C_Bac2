@@ -12,7 +12,7 @@
 	void DoFreeTry(Car *car);
 	void InitialisationOrResetCar(Car *car);
 	
-	#define NUMBEROFCARS 5
+	#define NUMBEROFCARS 20
 	#define LENGTHARRAY(array) (sizeof(array)/sizeof(*array))
 	#include "../Sources/Functions.c"
 

@@ -15,7 +15,7 @@ int main() // Add boolClassicWeekEnd in arg
 
 	// Initialisation of variables
 	int boolSprint = 0, boolClassicWeekEnd = 1, shmSize = sizeof(Car) * NUMBEROFCARS, shmData[NUMBEROFCARS], shmId,
-	arrayCarsId[NUMBEROFCARS] = {44, 63, 1, 11, 55};//, 16, 4, 3, 14, 31, 10, 22, 5, 18, 6, 23, 77, 24, 47, 9};
+	arrayCarsId[NUMBEROFCARS] = {44, 63, 1, 11, 55, 16, 4, 3, 14, 31, 10, 22, 5, 18, 6, 23, 77, 24, 47, 9};
 
 	Car *shMem;
 
@@ -32,7 +32,12 @@ int main() // Add boolClassicWeekEnd in arg
 	}
 
 	// Create array of cars
-	Car *arrayCars = CarBuilder(arrayCarsId);
+	Car *arrayCars;
+	if (!(arrayCars = CarBuilder(arrayCarsId)))
+	{
+		printf("CarBuilder error");
+		exit(EXIT_FAILURE);
+	}
 
 	// For each child
 	for (int i = 0; i < NUMBEROFCARS; i++)
@@ -54,11 +59,11 @@ int main() // Add boolClassicWeekEnd in arg
         {	
 			if (boolClassicWeekEnd)
 			{
-				printf("\nFriday's morning : Free Try\n\n");
+				// printf("\nFriday's morning : Free Try\n\n");
 				DoFreeTry(&arrayCars[i]);
-				printf("\nFriday's afternoon : Free Try\n\n");
+				// printf("\nFriday's afternoon : Free Try\n\n");
 				DoFreeTry(&arrayCars[i]);
-				printf("\nSaturday's morning : Free Try\n\n");
+				// printf("\nSaturday's morning : Free Try\n\n");
 				DoFreeTry(&arrayCars[i]);
 				memcpy(&shMem[i], &arrayCars[i], sizeof(arrayCars[i]));
 			}	
@@ -73,18 +78,40 @@ int main() // Add boolClassicWeekEnd in arg
 	int waitRespons, waitStatus = 0;
 	while ((waitRespons = wait(&waitStatus)) > 0);
 
-	FILE *pointerFileScore = fopen("Results/score.txt", "w");
+	FILE *pointerFileScore;
+	if (!(pointerFileScore = fopen("Results/score.txt", "w")))
+	{
+		perror("fopen error");
+		exit(EXIT_FAILURE);
+	}
 
 	for (int i = 0; i < NUMBEROFCARS; i++)
 	{
 		Car *car = (Car *) (&shMem[i]);
-		fprintf(pointerFileScore, "Car : %d -> Turn : %d\n", car->id, car->turnTimeMS);
+		if(!(fprintf(pointerFileScore, "Car : %d -> Turn : %d\n", car->id, car->turnTimeMS)))
+		{
+			perror("fprintf error ");
+			exit(EXIT_FAILURE);
+		}
 	}
 
-	fclose(pointerFileScore);
+	if(fclose(pointerFileScore))
+	{
+		perror("fclose error ");
+		exit(EXIT_FAILURE);
+	}
 		
-	shmdt(shMem);
-    shmctl(shmId, IPC_RMID, 0);
+	if((shmdt(shMem)) < 0)
+	{
+		perror("shmdt error ");
+		exit(EXIT_FAILURE);
+	}
+
+    if((shmctl(shmId, IPC_RMID, 0)) > 0)
+	{
+		perror("shmctl error ");
+		exit(EXIT_FAILURE);
+	}
 
 	exit(EXIT_SUCCESS);
 }
