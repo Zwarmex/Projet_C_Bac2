@@ -1,6 +1,5 @@
 typedef struct Car
 {
-
 	int id;
 	int bestTimeCircuitMS[3];
 	int timeCircuitMS[3];
@@ -13,14 +12,12 @@ typedef struct Car
 
 void EndOfSession(Car *car)
 {
-	
 	car->state = 1;
 	printf("Car %d : Out.\n", car->id);
 }
 
 void EnterThePits(Car *car)
 {
-	
 	car->state = 2;
 	printf("Car %d : P.\n", car->id);
 }
@@ -54,30 +51,19 @@ void PrintBestTimeWithText(int id, int timeMS, char sent[])
 
 Car *CarBuilder(int arrayId[])
 {
-
 	static Car arrayCars[NUMBEROFCARS];
 
 	for (int i = 0; i < NUMBEROFCARS; i++)
 	{
-
 		arrayCars[i].id = arrayId[i];
-		arrayCars[i].turnTimeMS = 0;
-		arrayCars[i].position = 0; // For later
-		arrayCars[i].lastTurnMS = 0;
 		arrayCars[i].totalTurnMS = 0;
-		arrayCars[i].state = 0; // Ready to starting
-		for (int j = 0; j < LENGTHARRAY(arrayCars[i].timeCircuitMS); j++)
-		{
-			arrayCars[i].timeCircuitMS[j] = 0;
-			arrayCars[i].bestTimeCircuitMS[j] = 0;
-		}
-		
+		InitialisationOrResetCar(&arrayCars[i]);
 	}
 
 	return arrayCars;
 }
 
-void ResetCar(Car *car)
+void InitialisationOrResetCar(Car *car)
 {
 	for (int i = 0; i < NUMBEROFCARS; i++)
 	{
@@ -86,6 +72,7 @@ void ResetCar(Car *car)
 		car->position = 0; // For later
 		car->lastTurnMS = 0;
 		car->state = 0; // Ready to starting
+		car->totalTurnMS = 0;
 		for (int j = 0; j < LENGTHARRAY(car->timeCircuitMS); j++)
 		{
 			car->timeCircuitMS[j] = 0;
@@ -99,7 +86,7 @@ void DoFreeTry(Car *car)
 	// While true continue turn testing
 	int boolContinueTesting = 1, upperTimeMaxMS = 45000, lowerTimeMinMS = 25000;
 	
-	ResetCar(car);
+	InitialisationOrResetCar(car);
 	
 	while (boolContinueTesting && !car->state)
 	{
@@ -107,8 +94,6 @@ void DoFreeTry(Car *car)
 		// For each sections
 		for (int i = 0; i < LENGTHARRAY(car->timeCircuitMS); ++i)
 		{
-
-			
 			car->timeCircuitMS[i] = (rand() % (upperTimeMaxMS - lowerTimeMinMS + 1)) + lowerTimeMinMS;
 			
 			// sleep(MillisecondsToSeconds(car->timeCircuitMS[i]));
@@ -116,7 +101,6 @@ void DoFreeTry(Car *car)
 			// if the car is doing a better time 
 			if (car->bestTimeCircuitMS[i] == 0 || car->bestTimeCircuitMS[i] > car->timeCircuitMS[i])
 			{
-
 				car->bestTimeCircuitMS[i] = car->timeCircuitMS[i];
 				char* sectionAndSentence = malloc(sizeof("S a new best time") + sizeof(int));
 				
@@ -152,5 +136,4 @@ void DoFreeTry(Car *car)
 	}
 
 	PrintBestTimeWithText(car->id, car->totalTurnMS, "Total");
-	car->totalTurnMS = 0;
 }
