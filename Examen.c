@@ -52,7 +52,7 @@ int main() // Add boolClassicWeekEnd in arg
 		}
 	
 		// Put seed number in rand with pid of the processus
-		srand(time(NULL) ^ (getpid()<<16));
+		srand(time(NULL) ^ getpid());
 
 		// Child (a car)
 		if (pidFork == 0)
@@ -65,6 +65,7 @@ int main() // Add boolClassicWeekEnd in arg
 				DoFreeTry(&arrayCars[i]);
 				// printf("\nSaturday's morning : Free Try\n\n");
 				DoFreeTry(&arrayCars[i]);
+
 				memcpy(&shMem[i], &arrayCars[i], sizeof(arrayCars[i]));
 			}	
 			// Child have to not make another child
@@ -72,11 +73,18 @@ int main() // Add boolClassicWeekEnd in arg
 		}
 	}
 
-	
-
 	// For all the children to be terminated
 	int waitRespons, waitStatus = 0;
-	while ((waitRespons = wait(&waitStatus)) > 0);
+	while ((waitRespons = wait(&waitStatus)) > 0)
+	{
+		
+	}
+	Car *unsortedArrayCar[NUMBEROFCARS];
+	for (int i = 0; i < NUMBEROFCARS; i++)
+	{
+		unsortedArrayCar[i] = (Car *) (&shMem[i]);
+	}
+	
 
 	FILE *pointerFileScore;
 	if (!(pointerFileScore = fopen("Results/score.txt", "w")))

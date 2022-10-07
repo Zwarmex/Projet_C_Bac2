@@ -135,3 +135,19 @@ void DoFreeTry(Car *car)
 
 	// PrintBestTimeWithText(car->id, car->totalTurnMS, "Total");
 }
+
+void CarSortScore(Car arrayCar[])
+{
+    for (int i = 0; i < (NUMBEROFCARS - 1); ++i)
+    {
+        for (int j = 0; j < NUMBEROFCARS - 1 - i; ++j )
+        {
+            if (arrayCar[j].totalTurnMS > arrayCar[j+1].totalTurnMS)
+            {
+                Car temp = arrayCar[j+1];
+                arrayCar[j+1] = arrayCar[j];
+                arrayCar[j] = temp;
+            }
+        }
+    }
+}
