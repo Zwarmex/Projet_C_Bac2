@@ -79,12 +79,8 @@ int main() // Add boolClassicWeekEnd in arg
 	{
 		
 	}
-	Car *unsortedArrayCar[NUMBEROFCARS];
-	for (int i = 0; i < NUMBEROFCARS; i++)
-	{
-		unsortedArrayCar[i] = (Car *) (&shMem[i]);
-	}
-	
+
+	Car sortedArrayCar[NUMBEROFCARS] = SortedArrayCar(&arrayCars);
 
 	FILE *pointerFileScore;
 	if (!(pointerFileScore = fopen("Results/score.txt", "w")))

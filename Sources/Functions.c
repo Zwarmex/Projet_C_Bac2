@@ -151,3 +151,8 @@ void CarSortScore(Car arrayCar[])
         }
     }
 }
+
+Car *sortedArrayCar(Car unsortedArrayCars[])
+{
+
+}
