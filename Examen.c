@@ -14,7 +14,7 @@ int main() // Add boolClassicWeekEnd in arg
 {
 
 	// Initialisation of variables
-	int boolSprint = 0, boolClassicWeekEnd = 1, pidFork, shmSize = sizeof(int)*NUMBEROFCARS, childrenPGID = 17000, shmData[NUMBEROFCARS],
+	int boolSprint = 0, boolClassicWeekEnd = 1, pidFork, shmSize = sizeof(int)*NUMBEROFCARS, childrenPGID = 17000, shmData,
 	shmId = shmget(IPC_PRIVATE, shmSize, IPC_CREAT | IPC_EXCL | S_IRUSR | S_IWUSR), *shMem = (int *) shmat(shmId, NULL, 0), 
 	arrayCarsId[NUMBEROFCARS] = {44, 63, 1, 11, 55, 16, 4, 3, 14, 31, 10, 22, 5, 18, 6, 23, 77, 24, 47, 9};
 
@@ -46,8 +46,8 @@ int main() // Add boolClassicWeekEnd in arg
 				DoFreeTry(&arrayCars[i]);
 				printf("\nSaturday's morning : Free Try\n\n");
 				DoFreeTry(&arrayCars[i]);
-				shmData[i] = i;
-				memmove(shMem, (int *) &shmData[i], sizeof(shmData[i]));
+				shmData = i;
+				memmove(shMem, (int *) &shmData, sizeof(shmData));
 			}	
 			// Child have to not make another child
 			exit(EXIT_SUCCESS);
@@ -60,10 +60,9 @@ int main() // Add boolClassicWeekEnd in arg
 
 	for (int i = 0; i < NUMBEROFCARS; i++)
 	{
-		/* code */
+		printf("shm : %d\n", *&shMem[i]);
+
 	}
-	
-	printf("\n\nshm : %d\n", *shMem);
 
 	
 
