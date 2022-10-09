@@ -152,7 +152,33 @@ void CarSortScore(Car arrayCar[])
     }
 }
 
-Car *sortedArrayCar(Car unsortedArrayCars[])
+void swap(Car* xp, Car* yp)
 {
-
+    Car temp = *xp;
+    *xp = *yp;
+    *yp = temp;
+}
+ 
+// Function to perform Selection Sort
+void selectionSort(Car arr[])
+{
+    int i, j, min_idx;
+ 
+    // One by one move boundary of unsorted subarray
+    for (i = 0; i < NUMBEROFCARS - 1; i++) 
+	{
+ 
+        // Find the minimum element in unsorted array
+        min_idx = i;
+        for (j = i + 1; j < NUMBEROFCARS; j++)
+		{
+            if (arr->bestTimeCircuitMS[j] < arr->bestTimeCircuitMS[min_idx])
+			{
+                min_idx = j;
+			}
+		} 
+        // Swap the found minimum element
+        // with the first element
+        swap(&arr[min_idx], &arr[i]);
+    }
 }

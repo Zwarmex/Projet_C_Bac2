@@ -80,7 +80,7 @@ int main() // Add boolClassicWeekEnd in arg
 		
 	}
 
-	Car sortedArrayCar[NUMBEROFCARS] = SortedArrayCar(&arrayCars);
+	selectionSort(arrayCars);
 
 	FILE *pointerFileScore;
 	if (!(pointerFileScore = fopen("Results/score.txt", "w")))

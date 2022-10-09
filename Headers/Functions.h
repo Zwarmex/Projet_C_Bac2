@@ -11,7 +11,8 @@
 	void EnterThePits(Car *car);
 	void DoFreeTry(Car *car);
 	void InitialisationOrResetCar(Car *car);
-	Car *sortedArrayCar(Car unsortedArrayCars[]);
+	void swap(Car* xp, Car* yp);
+	void selectionSort(Car arr[]);
 	
 	#define NUMBEROFCARS 20
 	#define LENGTHARRAY(array) (sizeof(array)/sizeof(*array))
