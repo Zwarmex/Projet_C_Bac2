@@ -8,6 +8,7 @@ typedef struct Car
 	int state; 
 	int lastTurnMS;
 	int totalTurnMS;
+	int boolContinueCompetition;
 }Car;
 
 void EndOfSession(Car *car)
@@ -57,6 +58,7 @@ Car *CarBuilder(int arrayId[])
 	{
 		arrayCars[i].id = arrayId[i];
 		arrayCars[i].totalTurnMS = 0;
+		arrayCars[i].boolContinueCompetition = 1;
 		InitialisationOrResetCar(&arrayCars[i]);
 	}
 
