@@ -75,12 +75,7 @@ int main() // Add boolClassicWeekEnd in arg
 
 	// For all the children to be terminated
 	int waitRespons, waitStatus = 0;
-	while ((waitRespons = wait(&waitStatus)) > 0)
-	{
-		
-	}
-
-	Car *sortedArrayCars = SelectionSort(shMem);	
+	while ((waitRespons = wait(&waitStatus)) > 0);
 
 	FILE *pointerFileScore;
 	if (!(pointerFileScore = fopen("Results/score.txt", "w")))
@@ -88,6 +83,8 @@ int main() // Add boolClassicWeekEnd in arg
 		perror("fopen error");
 		exit(EXIT_FAILURE);
 	}
+
+	Car *sortedArrayCars = SelectionSort(shMem);
 
 	for (int i = 0; i < NUMBEROFCARS; i++)
 	{

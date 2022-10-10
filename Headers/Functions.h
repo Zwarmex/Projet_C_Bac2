@@ -11,7 +11,6 @@
 	void EnterThePits(Car *car);
 	void DoFreeTry(Car *car);
 	void InitialisationOrResetCar(Car *car);
-	void swap(Car* xp, Car* yp);
 	Car *SelectionSort(Car *arrayCars);
 	
 	#define NUMBEROFCARS 20

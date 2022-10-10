@@ -135,12 +135,6 @@ void DoFreeTry(Car *car)
 
 	// PrintBestTimeWithText(car->id, car->totalTurnMS, "Total");
 }
-void swap(Car* xp, Car* yp)
-{
-    Car temp = *xp;
-    *xp = *yp;
-    *yp = temp;
-}
  
 // Function to perform Selection Sort
 Car *SelectionSort(Car *arrayCars)
@@ -164,11 +158,10 @@ Car *SelectionSort(Car *arrayCars)
                 min_idx = j;
 			}
 		} 
-
-        // Swap the found minimum element
-        // with the first element
-        swap(&copyArrayCars[min_idx], &copyArrayCars[i]);
+        // Swap the found minimum element with the first element
+		Car temp = copyArrayCars[min_idx];
+		copyArrayCars[min_idx] = copyArrayCars[i];
+		copyArrayCars[i] = temp;
     }
-
 	return copyArrayCars;
 }
