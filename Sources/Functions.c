@@ -1,9 +1,9 @@
 typedef struct Car
 {
 	int id;
-	int bestTimeCircuitMS[3];
-	int timeCircuitMS[3];
-	int turnTimeMS;
+	int bestTimeSectionMS[3];
+	int timeSectionMS[3];
+	int timeTurnMS;
 	int position; // For later
 	int state; 
 	int lastTurnMS;
@@ -68,57 +68,63 @@ void InitialisationOrResetCar(Car *car)
 	for (int i = 0; i < NUMBEROFCARS; i++)
 	{
 
-		car->turnTimeMS = 0;
+		car->timeTurnMS = 0;
 		car->position = 0; // For later
 		car->lastTurnMS = 0;
 		car->state = 0; // Ready to starting
 		car->totalTurnMS = 0;
-		for (int j = 0; j < LENGTHARRAY(car->timeCircuitMS); j++)
+		for (int j = 0; j < LENGTHARRAY(car->timeSectionMS); j++)
 		{
-			car->timeCircuitMS[j] = 0;
-			car->bestTimeCircuitMS[j] = 0;
+			car->timeSectionMS[j] = 0;
+			car->bestTimeSectionMS[j] = 0;
 		}
 	}
 }
 
 void DoFreeTry(Car *car)
 {
-	// While true continue turn testing
 	int boolContinueTesting = 1, upperTimeMaxMS = 45000, lowerTimeMinMS = 25000;
 	
+	// Reset the car before the race
 	InitialisationOrResetCar(car);
 	
+	// While true continue turn testing
 	while (boolContinueTesting && !car->state)
 	{
-		car->turnTimeMS = 0;
+		//Reset the time of the turn
+		car->timeTurnMS = 0;
+
 		// For each sections
-		for (int i = 0; i < LENGTHARRAY(car->timeCircuitMS); ++i)
+		for (int i = 0; i < LENGTHARRAY(car->timeSectionMS); ++i)
 		{
-			car->timeCircuitMS[i] = rand() % (upperTimeMaxMS - lowerTimeMinMS + 1) + lowerTimeMinMS;
+			// Car time is randomize
+			car->timeSectionMS[i] = rand() % (upperTimeMaxMS - lowerTimeMinMS + 1) + lowerTimeMinMS;
 			
 			// if the car is doing a better time 
-			if (car->bestTimeCircuitMS[i] == 0 || car->bestTimeCircuitMS[i] > car->timeCircuitMS[i])
+			if (car->bestTimeSectionMS[i] == 0 || car->bestTimeSectionMS[i] > car->timeSectionMS[i])
 			{
-				car->bestTimeCircuitMS[i] = car->timeCircuitMS[i];
-				char* sectionAndSentence = malloc(sizeof("S a new best time") + sizeof(int));
-				
-				strcpy(sectionAndSentence, "S");
-				char sectionNumber[2] = {(i+1)+'0'};
-				strcat(sectionAndSentence, sectionNumber);
-				strcat(sectionAndSentence, " new best time");
+				car->bestTimeSectionMS[i] = car->timeSectionMS[i];
 
-				// PrintBestTimeWithText(car->id, car->bestTimeCircuitMS[i] , sectionAndSentence);
+				// char* sectionAndSentence = malloc(sizeof("S a new best time") + sizeof(int));
 				
-				free(sectionAndSentence);
+				// strcpy(sectionAndSentence, "S");
+				// char sectionNumber[2] = {(i+1)+'0'};
+				// strcat(sectionAndSentence, sectionNumber);
+				// strcat(sectionAndSentence, " new best time");
+
+				// PrintBestTimeWithText(car->id, car->bestTimeSectionMS[i] , sectionAndSentence);
+				
+				// free(sectionAndSentence);
 			}
 
 			// Keep the time of the circuit
-			car->turnTimeMS += car->timeCircuitMS[i];
+			car->timeTurnMS += car->timeSectionMS[i];
 		}
 
-		car->totalTurnMS += car->turnTimeMS;
-		
-		// PrintBestTimeWithText(car->id, car->turnTimeMS, "Turn");
+		car->totalTurnMS += car->timeTurnMS;
+		car->lastTurnMS = car->timeTurnMS;
+
+		// PrintBestTimeWithText(car->id, car->timeTurnMS, "Turn");
 
 		boolContinueTesting =  rand() % 2;
 
@@ -154,7 +160,7 @@ Car *SelectionSort(Car *arrayCars)
 		// while ();  ziehbiezbfezhbfjezhbfjzebfjezbfjezfbjezhfbjezhbfjezhfbezjhfbjezfhb
         for (int j = i + 1; j < NUMBEROFCARS; j++)
 		{
-            if (copyArrayCars[j].turnTimeMS < copyArrayCars[min_idx].turnTimeMS)
+            if (copyArrayCars[j].timeTurnMS < copyArrayCars[min_idx].timeTurnMS)
 			{
                 min_idx = j;
 			}

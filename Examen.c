@@ -89,7 +89,7 @@ int main() // Add boolClassicWeekEnd in arg
 	for (int i = 0; i < NUMBEROFCARS; i++)
 	{
 		Car *car = (Car *) (&sortedArrayCars[i]);
-		if(!(fprintf(pointerFileScore, "Car : %d -> Turn : %d\n", car->id, car->turnTimeMS)))
+		if(!(fprintf(pointerFileScore, "Car : %d -> Turn : %d\n", car->id, car->timeTurnMS)))
 		{
 			perror("fprintf error ");
 			exit(EXIT_FAILURE);
