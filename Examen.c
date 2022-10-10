@@ -80,7 +80,7 @@ int main() // Add boolClassicWeekEnd in arg
 		
 	}
 
-	selectionSort(arrayCars);
+	Car *sortedArrayCars = SelectionSort(shMem);	
 
 	FILE *pointerFileScore;
 	if (!(pointerFileScore = fopen("Results/score.txt", "w")))
@@ -91,7 +91,7 @@ int main() // Add boolClassicWeekEnd in arg
 
 	for (int i = 0; i < NUMBEROFCARS; i++)
 	{
-		Car *car = (Car *) (&shMem[i]);
+		Car *car = (Car *) (&sortedArrayCars[i]);
 		if(!(fprintf(pointerFileScore, "Car : %d -> Turn : %d\n", car->id, car->turnTimeMS)))
 		{
 			perror("fprintf error ");

@@ -135,23 +135,6 @@ void DoFreeTry(Car *car)
 
 	// PrintBestTimeWithText(car->id, car->totalTurnMS, "Total");
 }
-
-void CarSortScore(Car arrayCar[])
-{
-    for (int i = 0; i < (NUMBEROFCARS - 1); ++i)
-    {
-        for (int j = 0; j < NUMBEROFCARS - 1 - i; ++j )
-        {
-            if (arrayCar[j].totalTurnMS > arrayCar[j+1].totalTurnMS)
-            {
-                Car temp = arrayCar[j+1];
-                arrayCar[j+1] = arrayCar[j];
-                arrayCar[j] = temp;
-            }
-        }
-    }
-}
-
 void swap(Car* xp, Car* yp)
 {
     Car temp = *xp;
@@ -160,25 +143,32 @@ void swap(Car* xp, Car* yp)
 }
  
 // Function to perform Selection Sort
-void selectionSort(Car arr[])
+Car *SelectionSort(Car *arrayCars)
 {
-    int i, j, min_idx;
- 
-    // One by one move boundary of unsorted subarray
-    for (i = 0; i < NUMBEROFCARS - 1; i++) 
+	static Car copyArrayCars[NUMBEROFCARS];
+	// Copy the array of cars into a new one.
+	for (int i = 0; i < NUMBEROFCARS; i++)
 	{
- 
+		copyArrayCars[i] = arrayCars[i];
+	}
+	
+    // One by one move boundary of unsorted subarray
+    for (int i = 0; i < NUMBEROFCARS - 1; i++) 
+	{
         // Find the minimum element in unsorted array
-        min_idx = i;
-        for (j = i + 1; j < NUMBEROFCARS; j++)
+        int min_idx = i;
+        for (int j = i + 1; j < NUMBEROFCARS; j++)
 		{
-            if (arr->bestTimeCircuitMS[j] < arr->bestTimeCircuitMS[min_idx])
+            if (copyArrayCars[j].turnTimeMS < copyArrayCars[min_idx].turnTimeMS)
 			{
                 min_idx = j;
 			}
 		} 
+
         // Swap the found minimum element
         // with the first element
-        swap(&arr[min_idx], &arr[i]);
+        swap(&copyArrayCars[min_idx], &copyArrayCars[i]);
     }
+
+	return copyArrayCars;
 }

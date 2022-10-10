@@ -12,7 +12,7 @@
 	void DoFreeTry(Car *car);
 	void InitialisationOrResetCar(Car *car);
 	void swap(Car* xp, Car* yp);
-	void selectionSort(Car arr[]);
+	Car *SelectionSort(Car *arrayCars);
 	
 	#define NUMBEROFCARS 20
 	#define LENGTHARRAY(array) (sizeof(array)/sizeof(*array))
