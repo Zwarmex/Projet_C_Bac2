@@ -151,6 +151,7 @@ Car *SelectionSort(Car *arrayCars)
 	{
         // Find the minimum element in unsorted array
         int min_idx = i;
+		// while ();  ziehbiezbfezhbfjezhbfjzebfjezbfjezfbjezhfbjezhbfjezhfbezjhfbjezfhb
         for (int j = i + 1; j < NUMBEROFCARS; j++)
 		{
             if (copyArrayCars[j].turnTimeMS < copyArrayCars[min_idx].turnTimeMS)
