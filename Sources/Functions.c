@@ -166,7 +166,7 @@ void PrintScore(Car *arrayCars)
 		if(!(fprintf(pointerFileScore, "%d		%d		%d		%d		%d		%s		%s\n", 
 		car->id, car->timeSectionMS[0], car->timeSectionMS[1], car->timeSectionMS[2], car->timeTurnMS, (car->state == 2)?"True":"False", (car->state == 1)?"True":"False")))
 		{
-			perror("fprintf error ");
+			perror("fprintf data error ");
 			exit(EXIT_FAILURE);
 		}
 	}
@@ -180,29 +180,4 @@ void PrintScore(Car *arrayCars)
 
 char *PrintBestTimeWithText(int timeMS)
 {
-	int hours = ((timeMS / 1000) / 3600), 
-	minutes = ((timeMS / 1000) - (hours * 3600)) / 60, 
-	seconds = ((timeMS / 1000) - (hours * 3600) - (minutes * 60)),
-	milliseconds = (((timeMS) - (hours * 3600) - (minutes * 60)) - (seconds * 1000));
-
-    if (hours)
-    {
-		
-        printf("%d:%d:%d:%d\n", hours, minutes, seconds, milliseconds);
-    }
-
-    else if (minutes)
-    {
-       	printf("%d:%d:%d\n", minutes, seconds, milliseconds);
-    }
-
-    else if (seconds)
-    {
-        printf("%d:%d\n", seconds, milliseconds);
-    }
-
-    else
-    {
-        printf("%d\n", milliseconds);
-    }
 }

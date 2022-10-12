@@ -93,5 +93,10 @@ int main() // Add boolClassicWeekEnd in arg
 		exit(EXIT_FAILURE);
 	}
 
+
+	PrintBestTimeWithText(40000);
+
+
+
 	exit(EXIT_SUCCESS);
 }
