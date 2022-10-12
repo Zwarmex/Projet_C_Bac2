@@ -6,7 +6,6 @@
 		
 	typedef struct Car Car;
 	Car *CarBuilder(int arrayId[]);
-	char *PrintBestTimeWithText(int timeMS);
 	void EndOfSession(Car *car);
 	void EnterThePits(Car *car);
 	void DoFreeTry(Car *car);

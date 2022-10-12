@@ -177,7 +177,3 @@ void PrintScore(Car *arrayCars)
 		exit(EXIT_FAILURE);
 	}
 }
-
-char *PrintBestTimeWithText(int timeMS)
-{
-}
