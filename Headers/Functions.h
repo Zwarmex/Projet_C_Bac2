@@ -12,7 +12,8 @@
 	void InitialisationOrResetCar(Car *car);
 	Car *SelectionSort(Car *arrayCars);
 	float MSToSeconds(int MS);
-	void PrintScore(Car *arrayCars);
+    void PrintScore(Car *arrayCars);
+    char *returnBestTime(int timeMS, char *buff);
 	
 	#define NUMBEROFCARS 20
 	#define LENGTHARRAY(array) (sizeof(array)/sizeof(*array))

@@ -163,12 +163,30 @@ void PrintScore(Car *arrayCars)
 	for (int i = 0; i < NUMBEROFCARS; i++)
 	{
 		Car *car = (Car *) (&sortedArrayCars[i]);
-		if(!(fprintf(pointerFileScore, "%d		%d		%d		%d		%d		%s		%s\n", 
-		car->id, car->timeSectionMS[0], car->timeSectionMS[1], car->timeSectionMS[2], car->timeTurnMS, (car->state == 2)?"True":"False", (car->state == 1)?"True":"False")))
+		char *arrayBuffersTime[4];
+		for (int i = 0; i < 4; i++)
+		{
+			if(!(arrayBuffersTime[i] = malloc(sizeof(":") * 3 + sizeof(int) * 4)))
+			{
+				perror("malloc error ");
+				exit(EXIT_FAILURE);
+			}
+		}
+		
+		if(!(fprintf(pointerFileScore, "%d		%s		%s		%s		%s		%s		%s\n", 
+		car->id, returnBestTime(car->timeSectionMS[0], arrayBuffersTime[0]), returnBestTime(car->timeSectionMS[1], arrayBuffersTime[1]), 
+		returnBestTime(car->timeSectionMS[2], arrayBuffersTime[2]), returnBestTime(car->timeTurnMS, arrayBuffersTime[3]), 
+		(car->state == 2)?"True":"False", (car->state == 1)?"True":"False")))
 		{
 			perror("fprintf data error ");
 			exit(EXIT_FAILURE);
 		}
+
+		for (int i = 0; i < 4; i++)
+		{
+			free(arrayBuffersTime[i]);
+		}
+		
 	}
 
 	if(fclose(pointerFileScore))
@@ -176,4 +194,71 @@ void PrintScore(Car *arrayCars)
 		perror("fclose error ");
 		exit(EXIT_FAILURE);
 	}
+}
+
+char *returnBestTime(int timeMS, char *buff)
+{
+    int hours = ((timeMS / 1000) / 3600), 
+	minutes = ((timeMS / 1000) - (hours * 3600)) / 60, 
+	seconds = ((timeMS / 1000) - (hours * 3600) - (minutes * 60)),
+	milliseconds = ((timeMS) - (hours * 3600 * 1000) - (minutes * 60 *1000) - (seconds * 1000));
+
+    if (hours)
+    {
+        char hoursTime[3];
+        char minutesTime[3];
+        char secondsTime[3];
+        char millisecondsTime[4];
+        sprintf(hoursTime, "%d", hours);
+        sprintf(minutesTime, "%d", minutes);
+        sprintf(secondsTime, "%d", seconds);
+        sprintf(millisecondsTime, "%d", milliseconds);
+
+        strcpy(buff, hoursTime);
+        strcat(buff, ":");
+        strcat(buff, minutesTime);
+        strcat(buff, ":");
+        strcat(buff, secondsTime);
+        strcat(buff, ":");
+        strcat(buff, millisecondsTime);
+
+    }
+
+    else if (minutes)
+    {
+        char minutesTime[3];
+        char secondsTime[3];
+        char millisecondsTime[4];
+        sprintf(minutesTime, "%d", minutes);
+        sprintf(secondsTime, "%d", seconds);
+        sprintf(millisecondsTime, "%d", milliseconds);
+
+        strcpy(buff, minutesTime);
+        strcat(buff, ":");
+        strcat(buff, secondsTime);
+        strcat(buff, ":");
+        strcat(buff, millisecondsTime);
+    }
+
+    else if (seconds)
+    {
+        char secondsTime[3];
+        char millisecondsTime[4];
+        sprintf(secondsTime, "%d", seconds);
+        sprintf(millisecondsTime, "%d", milliseconds);
+
+        strcpy(buff, secondsTime);
+        strcat(buff, ":");
+        strcat(buff, millisecondsTime);
+    }
+
+    else
+    {
+        char millisecondsTime[4];
+        sprintf(millisecondsTime, "%d", milliseconds);
+
+        strcpy(buff, millisecondsTime);
+    }
+
+    return buff;
 }

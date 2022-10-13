@@ -14,9 +14,11 @@ char *returnBest(int MS, char *buff);
 int main(int argc, char const *argv[])
 {
     // printf("%s\n", returnBest(45000));
-    char *buff  = malloc(sizeof(":") * 3 + sizeof(int) * 4);
-    printf("%s\n%s", returnBest(99567, buff), returnBest(14789, buff));
-    free(buff);
+    char *buff1  = malloc(sizeof(":") * 3 + sizeof(int) * 4);
+    char *buff2  = malloc(sizeof(":") * 3 + sizeof(int) * 4);
+    printf("%s\n%s", returnBest(99567, buff1), returnBest(1455789, buff2));
+    free(buff1);
+    free(buff2);
     return 0;
 }
 
@@ -50,7 +52,6 @@ char *returnBest(int timeMS, char *buff)
 
     else if (minutes)
     {
-        char *buffReturned;
         char minutesTime[3];
         char secondsTime[3];
         char millisecondsTime[4];

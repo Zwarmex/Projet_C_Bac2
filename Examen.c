@@ -93,6 +93,5 @@ int main() // Add boolClassicWeekEnd in arg
 		exit(EXIT_FAILURE);
 	}
 
-
 	exit(EXIT_SUCCESS);
 }
