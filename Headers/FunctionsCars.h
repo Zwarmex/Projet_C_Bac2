@@ -12,7 +12,6 @@
 	void InitialisationOrResetCar(Car *car);
 	Car *SelectionSort(Car *arrayCars);
 	float MSToSeconds(int MS);
-    char *returnBestTime(int timeMS, char *buff);
 	int RandomNumber(int min, int max);
 	
 	#define NUMBEROFCARS 20
