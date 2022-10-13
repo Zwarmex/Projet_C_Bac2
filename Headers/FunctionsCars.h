@@ -1,8 +1,8 @@
 // If the file hasn't been include 
-#ifndef functions
+#ifndef functionsCars
 
 	// You can include the file
-	#define functions
+	#define functionsCars
 		
 	typedef struct Car Car;
 	Car *CarBuilder(int arrayId[]);
@@ -12,7 +12,6 @@
 	void InitialisationOrResetCar(Car *car);
 	Car *SelectionSort(Car *arrayCars);
 	float MSToSeconds(int MS);
-    void PrintScore(Car *arrayCars);
     char *returnBestTime(int timeMS, char *buff);
 	int RandomNumber(int min, int max);
 	

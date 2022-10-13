@@ -9,6 +9,7 @@
 #include <sys/wait.h>
 #include <signal.h>
 #include "Headers/FunctionsCars.h"
+#include "Headers/FunctionsPrinting.h"
 
 int main() // Add boolClassicWeekEnd in arg
 {
@@ -63,12 +64,14 @@ int main() // Add boolClassicWeekEnd in arg
 			{
 				// printf("\nFriday's morning : Free Try\n\n");
 				DoFreeTry(&arrayCars[i]);
+				memcpy(&shMem[i], &arrayCars[i], sizeof(arrayCars[i]));
 				// printf("\nFriday's afternoon : Free Try\n\n");
 				DoFreeTry(&arrayCars[i]);
+				memcpy(&shMem[i], &arrayCars[i], sizeof(arrayCars[i]));
 				// printf("\nSaturday's morning : Free Try\n\n");
 				DoFreeTry(&arrayCars[i]);
-
 				memcpy(&shMem[i], &arrayCars[i], sizeof(arrayCars[i]));
+
 			}	
 			// Child have to not make another child
 			exit(EXIT_SUCCESS);
