@@ -14,9 +14,10 @@
 	float MSToSeconds(int MS);
     void PrintScore(Car *arrayCars);
     char *returnBestTime(int timeMS, char *buff);
+	int RandomNumber(int min, int max);
 	
 	#define NUMBEROFCARS 20
 	#define LENGTHARRAY(array) (sizeof(array)/sizeof(*array))
-	#include "../Sources/Functions.c"
+	#include "../Sources/FunctionsCars.c"
 
 #endif

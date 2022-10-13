@@ -4,9 +4,9 @@ typedef struct Car
 	int bestTimeSectionMS[3];
 	int timeSectionMS[3];
 	int timeTurnMS;
-	int position; // For later
-	int state; // 1 for Out 2 for pit
-	int lastTurnMS;
+	int state; // 1 for Out
+	// int lastTurnMS;
+	int bestTimeTurnMS;
 	int totalTurnMS;
 	int boolContinueCompetition;
 }Car;
@@ -19,6 +19,7 @@ void EndOfSession(Car *car)
 
 void EnterThePits(Car *car)
 {
+	car->timeSectionMS[2] += RandomNumber(20000, 28000);
 	car->state = 2;
 	// printf("Car %d : P.\n", car->id);
 }
@@ -44,8 +45,7 @@ void InitialisationOrResetCar(Car *car)
 	{
 
 		car->timeTurnMS = 0;
-		car->position = 0; // For later
-		car->lastTurnMS = 0;
+		// car->lastTurnMS = 0;
 		car->state = 0; // Ready to starting
 		car->totalTurnMS = 0;
 		for (int j = 0; j < LENGTHARRAY(car->timeSectionMS); j++)
@@ -64,7 +64,7 @@ void DoFreeTry(Car *car)
 	InitialisationOrResetCar(car);
 	
 	// While true continue turn testing
-	while (boolContinueTesting && !car->state)
+	while (boolContinueTesting && car->state == 0 && car->totalTurnMS < 3600000)
 	{
 		//Reset the time of the turn
 		car->timeTurnMS = 0;
@@ -73,14 +73,10 @@ void DoFreeTry(Car *car)
 		for (int i = 0; i < LENGTHARRAY(car->timeSectionMS); ++i)
 		{
 			// Car time is randomize
-			car->timeSectionMS[i] = rand() % (upperTimeMaxMS - lowerTimeMinMS + 1) + lowerTimeMinMS;
-
-			// printf("go to sleep for : %d\n", car->timeSectionMS[i]);
-			// sleep(MSToSeconds(car->timeSectionMS[i]));
-
+			car->timeSectionMS[i] = RandomNumber(lowerTimeMinMS, upperTimeMaxMS);
 			
 			// if the car is doing a better time 
-			if (car->bestTimeSectionMS[i] == 0 || car->bestTimeSectionMS[i] > car->timeSectionMS[i])
+			if (!car->bestTimeSectionMS[i]|| car->bestTimeSectionMS[i] > car->timeSectionMS[i])
 			{
 				car->bestTimeSectionMS[i] = car->timeSectionMS[i];
 			}
@@ -90,16 +86,24 @@ void DoFreeTry(Car *car)
 		}
 
 		car->totalTurnMS += car->timeTurnMS;
-		car->lastTurnMS = car->timeTurnMS;
+		// car->lastTurnMS = car->timeTurnMS;
 
-		boolContinueTesting =  rand() % 2;
+		if (!car->bestTimeTurnMS || car->bestTimeTurnMS > car->timeTurnMS)
+		{
+			car->bestTimeTurnMS = car->timeTurnMS;
+		}
 
-		if((rand() % 15) == 1)
+		if(RandomNumber(0, 100) == 1)
+		{
+			boolContinueTesting = 0;
+		}
+
+		if(RandomNumber(0, 500) == 1)
 		{
 			EndOfSession(car);
 		}
 
-		if((rand() % 15) == 1)
+		if(RandomNumber(0, 300) == 1)
 		{
 			EnterThePits(car);
 		}
@@ -154,7 +158,7 @@ void PrintScore(Car *arrayCars)
 	// Sort the array of cars
 	Car *sortedArrayCars = SortArrayCars(arrayCars);
 
-	if(!(fprintf(pointerFileScore, "Car		S1			S2			S3			TT			PIT			OUT\n")))
+	if(!(fprintf(pointerFileScore, "Car		S1			S2			S3			Best TT				PIT			OUT\n")))
 	{
 		perror("fprintf title error ");
 		exit(EXIT_FAILURE);
@@ -175,7 +179,7 @@ void PrintScore(Car *arrayCars)
 		
 		if(!(fprintf(pointerFileScore, "%d		%s		%s		%s		%s		%s		%s\n", 
 		car->id, returnBestTime(car->timeSectionMS[0], arrayBuffersTime[0]), returnBestTime(car->timeSectionMS[1], arrayBuffersTime[1]), 
-		returnBestTime(car->timeSectionMS[2], arrayBuffersTime[2]), returnBestTime(car->timeTurnMS, arrayBuffersTime[3]), 
+		returnBestTime(car->timeSectionMS[2], arrayBuffersTime[2]), returnBestTime(car->bestTimeTurnMS, arrayBuffersTime[3]), 
 		(car->state == 2)?"True":"False", (car->state == 1)?"True":"False")))
 		{
 			perror("fprintf data error ");
@@ -261,4 +265,9 @@ char *returnBestTime(int timeMS, char *buff)
     }
 
     return buff;
+}
+
+int RandomNumber(int min, int max)
+{
+	return rand() % (max - min + 1) + min;
 }

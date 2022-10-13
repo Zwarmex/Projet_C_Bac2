@@ -8,7 +8,7 @@
 #include <sys/stat.h>
 #include <sys/wait.h>
 #include <signal.h>
-#include "Headers/Functions.h"
+#include "Headers/FunctionsCars.h"
 
 int main() // Add boolClassicWeekEnd in arg
 {
