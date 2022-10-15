@@ -56,7 +56,7 @@ void InitialisationOrResetCar(Car *car)
 	}
 }
 
-void DoFreeTry(Car *car)
+void DoRace(Car *car, int minutes)
 {
 	int boolContinueTesting = 1, upperTimeMaxMS = 45000, lowerTimeMinMS = 25000;
 	
@@ -64,7 +64,7 @@ void DoFreeTry(Car *car)
 	InitialisationOrResetCar(car);
 	
 	// While true continue turn testing
-	while (boolContinueTesting && car->state == 0 && car->totalTurnMS < 3600000)
+	while (boolContinueTesting && car->state == 0 && car->totalTurnMS < minutes*60*1000)
 	{
 		//Reset the time of the turn
 		car->timeTurnMS = 0;

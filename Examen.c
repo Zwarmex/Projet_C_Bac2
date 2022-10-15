@@ -62,16 +62,15 @@ int main() // Add boolClassicWeekEnd in arg
         {	
 			if (boolClassicWeekEnd)
 			{
-				// printf("\nFriday's morning : Free Try\n\n");
-				DoFreeTry(&arrayCars[i]);
-				memcpy(&shMem[i], &arrayCars[i], sizeof(arrayCars[i]));
-				// printf("\nFriday's afternoon : Free Try\n\n");
-				DoFreeTry(&arrayCars[i]);
-				memcpy(&shMem[i], &arrayCars[i], sizeof(arrayCars[i]));
-				// printf("\nSaturday's morning : Free Try\n\n");
-				DoFreeTry(&arrayCars[i]);
-				memcpy(&shMem[i], &arrayCars[i], sizeof(arrayCars[i]));
+				DoRace(&arrayCars[i], 60);
+				// memcpy(&shMem[i], &arrayCars[i], sizeof(arrayCars[i]));
+				DoRace(&arrayCars[i], 60);
+				// memcpy(&shMem[i], &arrayCars[i], sizeof(arrayCars[i]));
+				DoRace(&arrayCars[i], 60);
 
+				DoRace(&arrayCars[i], 18);
+				memcpy(&shMem[i], &arrayCars[i], sizeof(arrayCars[i]));
+				
 			}	
 			// Child have to not make another child
 			exit(EXIT_SUCCESS);

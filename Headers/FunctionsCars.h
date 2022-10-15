@@ -8,7 +8,7 @@
 	Car *CarBuilder(int arrayId[]);
 	void EndOfSession(Car *car);
 	void EnterThePits(Car *car);
-	void DoFreeTry(Car *car);
+	void DoRace(Car *car, int minutes);
 	void InitialisationOrResetCar(Car *car);
 	Car *SelectionSort(Car *arrayCars);
 	float MSToSeconds(int MS);
