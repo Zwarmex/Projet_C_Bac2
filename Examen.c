@@ -27,13 +27,6 @@ int main() // Add boolClassicWeekEnd in arg
 		perror("shmget error ");
 		exit(EXIT_FAILURE);
 	} 
-	
-	// Get the sh m from the id
-	if ((shMem = (Car *) shmat(shmId, NULL, 0)) < 0)
-	{
-		perror("shmat error ");
-		exit(EXIT_FAILURE);
-	}
 
 	// Create array of cars
 	Car *arrayCars;
@@ -55,21 +48,36 @@ int main() // Add boolClassicWeekEnd in arg
 		}
 	
 		// Put seed number in rand with pid of the processus
-		srand(time(NULL) ^ getpid());
+		srand(time(NULL) ^ getpid());	
+
+		// Get the sh m from the id
+		if ((shMem = (Car *) shmat(shmId, NULL, 0)) < 0)
+		{
+			perror("shmat error ");
+			exit(EXIT_FAILURE);
+		}
 
 		// Child (a car)
 		if (pidFork == 0)
         {	
 			if (boolClassicWeekEnd)
 			{
-				DoRace(&arrayCars[i], 60);
+				DoRace(&arrayCars[i], 60, &shMem[i]);
 				// memcpy(&shMem[i], &arrayCars[i], sizeof(arrayCars[i]));
-				DoRace(&arrayCars[i], 60);
+				DoRace(&arrayCars[i], 60, &shMem[i]);
 				// memcpy(&shMem[i], &arrayCars[i], sizeof(arrayCars[i]));
-				DoRace(&arrayCars[i], 60);
+				DoRace(&arrayCars[i], 60, &shMem[i]);
 
-				DoRace(&arrayCars[i], 18);
+				DoRace(&arrayCars[i], 18, &shMem[i]);
+
 				memcpy(&shMem[i], &arrayCars[i], sizeof(arrayCars[i]));
+
+
+				if((shmdt(shMem)) < 0)
+				{
+					perror("shmdt error ");
+					exit(EXIT_FAILURE);
+				}
 				
 			}	
 			// Child have to not make another child
@@ -82,7 +90,7 @@ int main() // Add boolClassicWeekEnd in arg
 	while ((waitRespons = wait(&waitStatus)) > 0);
 
 	PrintScore(shMem);
-		
+
 	if((shmdt(shMem)) < 0)
 	{
 		perror("shmdt error ");

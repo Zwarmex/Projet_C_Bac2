@@ -56,7 +56,7 @@ void InitialisationOrResetCar(Car *car)
 	}
 }
 
-void DoRace(Car *car, int minutes)
+void DoRace(Car *car, int minutes, Car *shMem)
 {
 	int boolContinueTesting = 1, upperTimeMaxMS = 45000, lowerTimeMinMS = 25000;
 	
@@ -75,15 +75,21 @@ void DoRace(Car *car, int minutes)
 			// Car time is randomize
 			car->timeSectionMS[i] = RandomNumber(lowerTimeMinMS, upperTimeMaxMS);
 			
+			// sleep(car->timeSectionMS[i]);
+
 			// if the car is doing a better time 
 			if (!car->bestTimeSectionMS[i]|| car->bestTimeSectionMS[i] > car->timeSectionMS[i])
 			{
 				car->bestTimeSectionMS[i] = car->timeSectionMS[i];
 			}
 
+			// memcpy(shMem, &car, sizeof(car));
+
 			// Keep the time of the circuit
 			car->timeTurnMS += car->timeSectionMS[i];
 		}
+		
+		// memcpy(&shMem, car, sizeof(car));
 
 		car->totalTurnMS += car->timeTurnMS;
 		// car->lastTurnMS = car->timeTurnMS;
