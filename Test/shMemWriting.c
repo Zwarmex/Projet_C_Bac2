@@ -19,15 +19,19 @@ int main(int argc, char const *argv[])
 	} 
 
     int forkId = fork();
-    if (forkId = 0)
+
+    if ((shMem = (int *) shmat(shmId, NULL, 0)) < 0)
+    {
+        perror("shmat error ");
+        exit(EXIT_FAILURE);
+    }
+
+    if (forkId == 0)
     {
         // Get the sh m from the id
-		if ((shMem = (int *) shmat(shmId, NULL, 0)) < 0)
-		{
-			perror("shmat error ");
-			exit(EXIT_FAILURE);
-		}
+		
         int data = 2;
+
         memcpy(&shMem, &data, sizeof(data));
 
         if((shmdt(shMem)) < 0)
@@ -35,28 +39,28 @@ int main(int argc, char const *argv[])
             perror("shmdt child error ");
             exit(EXIT_FAILURE);
         }
+
+        exit(EXIT_SUCCESS);
     }  
     else
     {
         // Get the sh m from the id
-		if ((shMem = (int *) shmat(shmId, NULL, 0)) < 0)
-		{
-			perror("shmat error ");
-			exit(EXIT_FAILURE);
-		}
+
         int data = 1;
+
+        sleep(1);
         
         memcpy(&shMem, &data, sizeof(data));
 
         sleep(1);
 
-        printf("%d", shMem);
+        printf("%d\n", shMem);
 
-        // if((shmdt(shMem)) < 0)
-        // {
-        //     perror("shmdt parent error ");
-        //     exit(EXIT_FAILURE);
-        // }
+        if((shmdt(shMem)) < 0)
+        {
+            perror("shmdt parent error ");
+            exit(EXIT_FAILURE);
+        }
 
         if((shmctl(shmId, IPC_RMID, 0)) > 0)
         {
