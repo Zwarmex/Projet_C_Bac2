@@ -83,13 +83,13 @@ void DoRace(Car *car, int minutes, Car *shMem)
 				car->bestTimeSectionMS[i] = car->timeSectionMS[i];
 			}
 
-			// memcpy(shMem, &car, sizeof(car));
+			memcpy(shMem, car, sizeof(*car));
 
 			// Keep the time of the circuit
 			car->timeTurnMS += car->timeSectionMS[i];
 		}
 		
-		// memcpy(&shMem, car, sizeof(car));
+		memcpy(shMem, car, sizeof(*car));
 
 		car->totalTurnMS += car->timeTurnMS;
 		// car->lastTurnMS = car->timeTurnMS;

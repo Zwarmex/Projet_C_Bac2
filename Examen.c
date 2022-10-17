@@ -15,7 +15,7 @@ int main() // Add boolClassicWeekEnd in arg
 {
 
 	// Initialisation of variables
-	int boolSprint = 0, boolClassicWeekEnd = 1, shmSize = sizeof(Car) * NUMBEROFCARS, shmData[NUMBEROFCARS], shmId,
+	int boolSprint = 0, boolClassicWeekEnd = 1, shmSize = sizeof(Car) * NUMBEROFCARS, shmId,
 	arrayCarsId[NUMBEROFCARS] = {44, 63, 1, 11, 55, 16, 4, 3, 14, 31, 10, 22, 5, 18, 6, 23, 77, 24, 47, 9};
 
 	Car *shMem;
@@ -70,7 +70,7 @@ int main() // Add boolClassicWeekEnd in arg
 
 				DoRace(&arrayCars[i], 18, &shMem[i]);
 
-				memcpy(&shMem[i], &arrayCars[i], sizeof(arrayCars[i]));
+				// memcpy(&shMem[i], &arrayCars[i], sizeof(arrayCars[i]));
 
 
 				if((shmdt(shMem)) < 0)
