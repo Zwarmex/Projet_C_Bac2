@@ -72,7 +72,6 @@ int main() // Add boolClassicWeekEnd in arg
 
 				memcpy(&shMem[i], &arrayCars[i], sizeof(arrayCars[i]));
 
-
 				if((shmdt(shMem)) < 0)
 				{
 					perror("shmdt error ");
