@@ -1,17 +1,17 @@
 void PrintScore(Car *arrayCars)
 
 {
-	FILE *pointerFileScore;
-	if (!(pointerFileScore = fopen("Results/score.txt", "w")))
-	{
-		perror("fopen error");
-		exit(EXIT_FAILURE);
-	}
+	// FILE *pointerFileScore;
+	// if (!(pointerFileScore = fopen("Results/score.txt", "w")))
+	// {
+	// 	perror("fopen error");
+	// 	exit(EXIT_FAILURE);
+	// }
 
 	// Sort the array of cars
 	Car *sortedArrayCars = SortArrayCars(arrayCars);
 
-	if(!(fprintf(pointerFileScore, "Car		S1			S2			S3			Best TT				PIT			OUT\n")))
+	if(!(fprintf(stdout, "Car		S1		S2		S3		Best TT		        PIT		OUT\n")))
 	{
 		perror("fprintf title error ");
 		exit(EXIT_FAILURE);
@@ -30,7 +30,7 @@ void PrintScore(Car *arrayCars)
 			}
 		}
 		
-		if(!(fprintf(pointerFileScore, "%d		%s		%s		%s		%s		%s		%s\n", 
+		if(!(fprintf(stdout, "%d		%s		%s		%s		%s		%s		%s\n", 
 		car->id, returnBestTime(car->timeSectionMS[0], arrayBuffersTime[0]), returnBestTime(car->timeSectionMS[1], arrayBuffersTime[1]), 
 		returnBestTime(car->timeSectionMS[2], arrayBuffersTime[2]), returnBestTime(car->bestTimeTurnMS, arrayBuffersTime[3]), 
 		(car->state == 2)?"True":"False", (car->state == 1)?"True":"False")))
@@ -39,6 +39,8 @@ void PrintScore(Car *arrayCars)
 			exit(EXIT_FAILURE);
 		}
 
+        fflush(stdout);
+
 		for (int i = 0; i < 4; i++)
 		{
 			free(arrayBuffersTime[i]);
@@ -46,11 +48,11 @@ void PrintScore(Car *arrayCars)
 		
 	}
 
-	if(fclose(pointerFileScore))
-	{
-		perror("fclose error ");
-		exit(EXIT_FAILURE);
-	}
+	// if(fclose(pointerFileScore))
+	// {
+	// 	perror("fclose error ");
+	// 	exit(EXIT_FAILURE);
+	// }
 }
 
 char *returnBestTime(int timeMS, char *buff)
