@@ -75,7 +75,7 @@ void DoRace(Car *car, int minutes, Car *shMem)
 			// Car time is randomize
 			car->timeSectionMS[i] = RandomNumber(lowerTimeMinMS, upperTimeMaxMS);
 			
-			// sleep(car->timeSectionMS[i]);
+			// sleep(car->timeSectionMS[i]/10);
 
 			// if the car is doing a better time 
 			if (!car->bestTimeSectionMS[i]|| car->bestTimeSectionMS[i] > car->timeSectionMS[i])
