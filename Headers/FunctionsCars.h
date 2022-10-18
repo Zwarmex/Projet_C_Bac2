@@ -14,10 +14,13 @@
 	float MSToSeconds(int MS);
 	void WriteInSharedMemory(Car *shMem, Car *car);
 	int RandomNumber(int min, int max);
+	void sigint();
 	
 	// Global variables
 	const char *semaChildName = "/tmp", *semaParentName = "/tmp";
 	sem_t *semaChildId, *semaParentId;
+	Car *shMem;
+	int shmId;
 	
 	#define NUMBEROFCARS 20
 	#define LENGTHARRAY(array) (sizeof(array)/sizeof(*array))

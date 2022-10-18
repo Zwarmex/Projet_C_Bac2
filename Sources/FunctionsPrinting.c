@@ -16,6 +16,7 @@ void PrintScore(Car *arrayCars)
 		perror("fprintf title error ");
 		exit(EXIT_FAILURE);
 	}
+    printf("\033[2J");
 
 	for (int i = 0; i < NUMBEROFCARS; i++)
 	{
@@ -46,7 +47,6 @@ void PrintScore(Car *arrayCars)
 		}
 		
 	}
-
 	// if(fclose(pointerFileScore))
 	// {
 	// 	perror("fclose error ");

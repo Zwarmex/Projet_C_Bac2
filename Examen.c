@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include <sys/shm.h>
 #include <semaphore.h>
+#include <signal.h>
 #include "Headers/FunctionsCars.h"
 #include "Headers/FunctionsPrinting.h"
 
@@ -14,10 +15,10 @@ int main() // Add boolClassicWeekEnd in arg
 {
 
 	// Initialisation of variables
-	int boolSprint = 0, boolClassicWeekEnd = 1, shmSize = sizeof(Car) * NUMBEROFCARS, shmId,
+	int boolSprint = 0, boolClassicWeekEnd = 1, shmSize = sizeof(Car) * NUMBEROFCARS,
 	arrayCarsId[NUMBEROFCARS] = {44, 63, 1, 11, 55, 16, 4, 3, 14, 31, 10, 22, 5, 18, 6, 23, 77, 24, 47, 9};
 	
-	Car *shMem, *arrayCars;
+	Car *arrayCars;
 
 	// Get id for the sh m
 	if((shmId = shmget(IPC_PRIVATE, shmSize, IPC_CREAT | 0775)) < 0)
@@ -56,7 +57,7 @@ int main() // Add boolClassicWeekEnd in arg
 
 		// Child (a car)
 		if (pidFork == 0)
-        {		
+        {
 			semaChildId = sem_open(semaChildName, O_CREAT, 0600, 1);
 			semaParentId = sem_open(semaParentName, O_CREAT, 0600, 0);
 
@@ -109,7 +110,10 @@ int main() // Add boolClassicWeekEnd in arg
 	// 	printf("paused");
 	// 	pause();
 	// }
-	semaParentId = sem_open(semaParentName, O_CREAT, 0600, 1);
+
+	signal(SIGINT, sigint);
+
+	semaParentId = sem_open(semaParentName, O_CREAT, 0600, 0);
 
 	if (semaParentId == SEM_FAILED)
 	{
@@ -123,24 +127,4 @@ int main() // Add boolClassicWeekEnd in arg
 		PrintScore(shMem);
 		sem_post(semaParentId);
 	}
-
-	if (sem_close(semaParentId) != 0)
-	{
-		perror("sem_close error "); 
-		exit(EXIT_FAILURE);
-	}
-
-	if((shmdt(shMem)) < 0)
-	{
-		perror("shmdt error ");
-		exit(EXIT_FAILURE);
-	}
-
-    if((shmctl(shmId, IPC_RMID, 0)) > 0)
-	{
-		perror("shmctl error ");
-		exit(EXIT_FAILURE);
-	}
-
-	exit(EXIT_SUCCESS);
 }

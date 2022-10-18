@@ -179,3 +179,26 @@ void WriteInSharedMemory(Car *shMem, Car *car)
         perror("sem_post error ");
     }
 }
+
+void sigint()
+{
+	if (sem_close(semaParentId) != 0)
+	{
+		perror("sem_close error "); 
+		exit(EXIT_FAILURE);
+	}
+
+	if((shmdt(shMem)) < 0)
+	{
+		perror("shmdt error ");
+		exit(EXIT_FAILURE);
+	}
+
+    if((shmctl(shmId, IPC_RMID, 0)) > 0)
+	{
+		perror("shmctl error ");
+		exit(EXIT_FAILURE);
+	}
+
+	exit(EXIT_SUCCESS);
+}
