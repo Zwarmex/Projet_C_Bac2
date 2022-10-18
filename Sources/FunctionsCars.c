@@ -75,23 +75,26 @@ void DoRace(Car *car, int minutes, Car *shMem)
 			// Car time is randomize
 			car->timeSectionMS[i] = RandomNumber(lowerTimeMinMS, upperTimeMaxMS);
 			
-			// sleep(car->timeSectionMS[i]/10);
+			sleep(MSToSeconds(car->timeSectionMS[i])/10);
 
 			// if the car is doing a better time 
 			if (!car->bestTimeSectionMS[i]|| car->bestTimeSectionMS[i] > car->timeSectionMS[i])
 			{
 				car->bestTimeSectionMS[i] = car->timeSectionMS[i];
 			}
-
-			memcpy(shMem, car, sizeof(*car));
+			WriteInSharedMemory(shMem, car);
+			// kill(getppid(), SIGINT);
 
 			// Keep the time of the circuit
 			car->timeTurnMS += car->timeSectionMS[i];
 		}
 		
-		memcpy(shMem, car, sizeof(*car));
+		// memcpy(shMem, car, sizeof(*car));
+		// kill(getppid(), SIGINT);
 
 		car->totalTurnMS += car->timeTurnMS;
+
+		WriteInSharedMemory(shMem, car);
 		// car->lastTurnMS = car->timeTurnMS;
 
 		if (!car->bestTimeTurnMS || car->bestTimeTurnMS > car->timeTurnMS)
@@ -155,4 +158,24 @@ float MSToSeconds(int MS)
 int RandomNumber(int min, int max)
 {
 	return rand() % (max - min + 1) + min;
+}
+
+void WriteInSharedMemory(Car *shMem, Car *car)
+{    
+    if (sem_wait(semaChildId) < 0)
+    {
+        perror("sem_wait error ");
+    }
+
+	memcpy(shMem, car, sizeof(*car));
+	
+	if (sem_post(semaParentId) < 0)
+    {
+        perror("sem_post error ");
+    }
+
+    if (sem_post(semaChildId) < 0)
+    {
+        perror("sem_post error ");
+    }
 }

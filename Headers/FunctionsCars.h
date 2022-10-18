@@ -12,7 +12,12 @@
 	void InitialisationOrResetCar(Car *car);
 	Car *SelectionSort(Car *arrayCars);
 	float MSToSeconds(int MS);
+	void WriteInSharedMemory(Car *shMem, Car *car);
 	int RandomNumber(int min, int max);
+	
+	// Global variables
+	const char *semaChildName = "/tmp", *semaParentName = "/tmp";
+	sem_t *semaChildId, *semaParentId;
 	
 	#define NUMBEROFCARS 20
 	#define LENGTHARRAY(array) (sizeof(array)/sizeof(*array))

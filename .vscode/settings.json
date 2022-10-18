@@ -1,9 +1,6 @@
 {
     "files.associations": {
-        "functions.h": "c",
-        "array": "c",
-        "stdio.h": "c",
-        "unistd.h": "c"
-    },
-    "C_Cpp.errorSquiggles": "Disabled"
+        "functionscars.h": "c",
+        "functionsprinting.h": "c"
+    }
 }

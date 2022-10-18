@@ -11,7 +11,7 @@ void PrintScore(Car *arrayCars)
 	// Sort the array of cars
 	Car *sortedArrayCars = SortArrayCars(arrayCars);
 
-	if(!(fprintf(stdout, "Car		S1		S2		S3		Best TT		        PIT		OUT\n")))
+	if(!(printf("Car		S1		S2		S3		Best TT		        PIT		OUT\n")))
 	{
 		perror("fprintf title error ");
 		exit(EXIT_FAILURE);
@@ -30,7 +30,7 @@ void PrintScore(Car *arrayCars)
 			}
 		}
 		
-		if(!(fprintf(stdout, "%d		%s		%s		%s		%s		%s		%s\n", 
+		if(!(printf("%d		%s		%s		%s		%s		%s		%s\n", 
 		car->id, returnBestTime(car->timeSectionMS[0], arrayBuffersTime[0]), returnBestTime(car->timeSectionMS[1], arrayBuffersTime[1]), 
 		returnBestTime(car->timeSectionMS[2], arrayBuffersTime[2]), returnBestTime(car->bestTimeTurnMS, arrayBuffersTime[3]), 
 		(car->state == 2)?"True":"False", (car->state == 1)?"True":"False")))
@@ -39,7 +39,6 @@ void PrintScore(Car *arrayCars)
 			exit(EXIT_FAILURE);
 		}
 
-        fflush(stdout);
 
 		for (int i = 0; i < 4; i++)
 		{
@@ -121,3 +120,4 @@ char *returnBestTime(int timeMS, char *buff)
 
     return buff;
 }
+
