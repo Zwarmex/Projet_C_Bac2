@@ -19,7 +19,6 @@ int main() // Add boolClassicWeekEnd in arg
 	
 	Car *shMem, *arrayCars;
 
-
 	// Get id for the sh m
 	if((shmId = shmget(IPC_PRIVATE, shmSize, IPC_CREAT | 0775)) < 0)
 	{
