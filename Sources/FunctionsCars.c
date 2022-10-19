@@ -181,25 +181,14 @@ void WriteInSharedMemory(Car *shMem, Car *car)
     }
 }
 
-void sigint()
+void EndOfProgram()
 {
-	if (sem_close(semaParentId) != 0)
-	{
-		perror("sem_close parent error "); 
-		exit(EXIT_FAILURE);
-	}
-
-	if((shmdt(shMem)) < 0)
-	{
-		perror("shmdt error ");
-		exit(EXIT_FAILURE);
-	}
-
-    if((shmctl(shmId, IPC_RMID, 0)) > 0)
-	{
-		perror("shmctl error ");
-		exit(EXIT_FAILURE);
-	}
-
+	shmdt(shMem);
+	sem_unlink(semaChildName);
+	sem_unlink(semaParentName);
+	sem_close(semaChildId);
+	sem_close(semaParentId);
+	shmdt(shMem);
+	shmctl(shmId, IPC_RMID, 0);
 	exit(EXIT_SUCCESS);
 }

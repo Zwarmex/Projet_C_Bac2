@@ -14,7 +14,6 @@
 
 int main() // Add boolClassicWeekEnd in arg
 {
-
 	// Initialisation of variables
 	int boolSprint = 0, boolClassicWeekEnd = 1, shmSize = sizeof(Car) * NUMBEROFCARS,
 	arrayCarsId[NUMBEROFCARS] = {44, 63, 1, 11, 55, 16, 4, 3, 14, 31, 10, 22, 5, 18, 6, 23, 77, 24, 47, 9};
@@ -49,6 +48,8 @@ int main() // Add boolClassicWeekEnd in arg
             exit(EXIT_FAILURE);
 		}
 
+		atexit(EndOfProgram);
+
 		// signal(SIGINT, sigint);
 
 		// Put seed number in rand with pid of the processus
@@ -81,32 +82,14 @@ int main() // Add boolClassicWeekEnd in arg
 				// DoRace(&arrayCars[i], 18, &shMem[i], semaphore);
 
 				// memcpy(&shMem[i], &arrayCars[i], sizeof(arrayCars[i]));
-			}	
-
-			if (sem_close(semaChildId) != 0 || sem_close(semaParentId) != 0)
-			{
-				perror("sem_close error "); 
-				exit(EXIT_FAILURE);
 			}
 
-			// if (sem_unlink(semaName) < 0)
-			// {
-			// 	perror("sem_unlink error "); 
-			// 	exit(EXIT_FAILURE);
-			// }
-
-			if(shmdt(shMem) < 0)
-			{
-				perror("shmdt error ");
-				exit(EXIT_FAILURE);
-			}
 			// Child have to not make another child
 			exit(EXIT_SUCCESS);
 		}
 	}
 
-	// signal(SIGINT, sigint);
-
+	signal(SIGINT, EndOfProgram);
 
 	if (semaParentId == SEM_FAILED)
 	{

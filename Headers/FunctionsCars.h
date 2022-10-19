@@ -14,7 +14,7 @@
 	float MSToSeconds(int MS);
 	void WriteInSharedMemory(Car *shMem, Car *car);
 	int RandomNumber(int min, int max);
-	void sigint();
+	void EndOfProgram();
 	
 	// Global variables
 	const char *semaChildName = "/child", *semaParentName = "/parent";
