@@ -161,7 +161,6 @@ int RandomNumber(int min, int max)
 
 void WriteInSharedMemory(Car *shMem, Car *car)
 {    
-
     if (sem_wait(semaChildId) < 0)
     {
         perror("sem_wait child error ");
