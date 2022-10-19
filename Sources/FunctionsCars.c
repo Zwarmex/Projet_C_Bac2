@@ -75,18 +75,18 @@ void DoRace(Car *car, int minutes, Car *shMem)
 			// Car time is randomize
 			car->timeSectionMS[i] = RandomNumber(lowerTimeMinMS, upperTimeMaxMS);
 			
-			sleep((int)((MSToSeconds(car->timeSectionMS[i])/5)));
+			sleep((int)((MSToSeconds(car->timeSectionMS[i])/2)));
 
 			// if the car is doing a better time 
 			if (!car->bestTimeSectionMS[i]|| car->bestTimeSectionMS[i] > car->timeSectionMS[i])
 			{
 				car->bestTimeSectionMS[i] = car->timeSectionMS[i];
 			}
-			WriteInSharedMemory(shMem, car);
 			// kill(getppid(), SIGINT);
 
 			// Keep the time of the circuit
 			car->timeTurnMS += car->timeSectionMS[i];
+			WriteInSharedMemory(shMem, car);
 		}
 		
 		// memcpy(shMem, car, sizeof(*car));
@@ -94,7 +94,6 @@ void DoRace(Car *car, int minutes, Car *shMem)
 
 		car->totalTurnMS += car->timeTurnMS;
 
-		WriteInSharedMemory(shMem, car);
 		// car->lastTurnMS = car->timeTurnMS;
 
 		if (!car->bestTimeTurnMS || car->bestTimeTurnMS > car->timeTurnMS)
@@ -134,7 +133,7 @@ Car *SortArrayCars(Car *arrayCars)
 	{
         // Find the minimum element in unsorted array
         int min_idx = i;
-		// while ();  ziehbiezbfezhbfjezhbfjzebfjezbfjezfbjezhfbjezhbfjezhfbezjhfbjezfhb
+
         for (int j = i + 1; j < NUMBEROFCARS; j++)
 		{
             if (copyArrayCars[j].timeTurnMS < copyArrayCars[min_idx].timeTurnMS)

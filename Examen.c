@@ -23,6 +23,12 @@ int main() // Add boolClassicWeekEnd in arg
 	semaChildId = sem_open("/child", O_CREAT, S_IRUSR | S_IWUSR, 1);
 	semaParentId = sem_open("/parent", O_CREAT, S_IRUSR | S_IWUSR, 0);
 
+	if (semaChildId == SEM_FAILED || semaParentId == SEM_FAILED)
+	{
+		perror("sem_open child error ");
+		exit(EXIT_FAILURE);
+	}
+
 	// Get id for the sh m
 	if((shmId = shmget(IPC_PRIVATE, shmSize, IPC_CREAT | 0775)) < 0)
 	{
@@ -65,12 +71,6 @@ int main() // Add boolClassicWeekEnd in arg
 		// Child (a car)
 		if (!pidFork)
         {
-			if (semaChildId == SEM_FAILED || semaParentId == SEM_FAILED)
-			{
-				perror("sem_open child error ");
-				exit(EXIT_FAILURE);
-			}
-
 			if (boolClassicWeekEnd)
 			{
 				DoRace(&arrayCars[i], 60, &shMem[i]);
@@ -90,12 +90,6 @@ int main() // Add boolClassicWeekEnd in arg
 	}
 
 	signal(SIGINT, EndOfProgram);
-
-	if (semaParentId == SEM_FAILED)
-	{
-		perror("sem_open parent error ");
-		exit(EXIT_FAILURE);
-	}
 
 	while(1)
 	{
