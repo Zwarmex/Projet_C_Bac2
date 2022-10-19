@@ -7,6 +7,7 @@
 #include <sys/shm.h>
 #include <semaphore.h>
 #include <signal.h>
+#include <sys/stat.h>
 #include "Headers/FunctionsCars.h"
 #include "Headers/FunctionsPrinting.h"
 
@@ -19,6 +20,9 @@ int main() // Add boolClassicWeekEnd in arg
 	arrayCarsId[NUMBEROFCARS] = {44, 63, 1, 11, 55, 16, 4, 3, 14, 31, 10, 22, 5, 18, 6, 23, 77, 24, 47, 9};
 	
 	Car *arrayCars;
+
+	semaChildId = sem_open("/child", O_CREAT, S_IRUSR | S_IWUSR, 1);
+	semaParentId = sem_open("/parent", O_CREAT, S_IRUSR | S_IWUSR, 0);
 
 	// Get id for the sh m
 	if((shmId = shmget(IPC_PRIVATE, shmSize, IPC_CREAT | 0775)) < 0)
@@ -41,10 +45,12 @@ int main() // Add boolClassicWeekEnd in arg
 		// Fork and check errors
 		if ((pidFork = fork()) == -1)
         {
-			perror("fork error");
+			perror("fork error ");
             exit(EXIT_FAILURE);
 		}
-	
+
+		// signal(SIGINT, sigint);
+
 		// Put seed number in rand with pid of the processus
 		srand(time(NULL) ^ getpid());	
 
@@ -56,14 +62,11 @@ int main() // Add boolClassicWeekEnd in arg
 		}
 
 		// Child (a car)
-		if (pidFork == 0)
+		if (!pidFork)
         {
-			semaChildId = sem_open(semaChildName, O_CREAT, 0600, 1);
-			semaParentId = sem_open(semaParentName, O_CREAT, 0600, 0);
-
 			if (semaChildId == SEM_FAILED || semaParentId == SEM_FAILED)
 			{
-				perror("sem_open error ");
+				perror("sem_open child error ");
 				exit(EXIT_FAILURE);
 			}
 
@@ -92,7 +95,7 @@ int main() // Add boolClassicWeekEnd in arg
 			// 	exit(EXIT_FAILURE);
 			// }
 
-			if((shmdt(shMem)) < 0)
+			if(shmdt(shMem) < 0)
 			{
 				perror("shmdt error ");
 				exit(EXIT_FAILURE);
@@ -102,29 +105,23 @@ int main() // Add boolClassicWeekEnd in arg
 		}
 	}
 
-	// For all the children to be terminated
-	// int waitRespons, waitStatus = 0;
-	// while(1)
-	// {
-	// 	// signal(SIGINT, SignalHandler);
-	// 	printf("paused");
-	// 	pause();
-	// }
+	// signal(SIGINT, sigint);
 
-	signal(SIGINT, sigint);
-
-	semaParentId = sem_open(semaParentName, O_CREAT, 0600, 0);
 
 	if (semaParentId == SEM_FAILED)
 	{
-		perror("sem_open error ");
+		perror("sem_open parent error ");
 		exit(EXIT_FAILURE);
 	}
 
 	while(1)
 	{
-		sem_wait(semaParentId);
+		if(sem_wait(semaParentId) < 0)
+		{
+			perror("sem_wait parent error ");
+			exit(EXIT_FAILURE);
+		}
+
 		PrintScore(shMem);
-		sem_post(semaParentId);
 	}
 }

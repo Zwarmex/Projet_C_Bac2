@@ -17,7 +17,7 @@
 	void sigint();
 	
 	// Global variables
-	const char *semaChildName = "/tmp", *semaParentName = "/tmp";
+	const char *semaChildName = "/child", *semaParentName = "/parent";
 	sem_t *semaChildId, *semaParentId;
 	Car *shMem;
 	int shmId;

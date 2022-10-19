@@ -75,7 +75,7 @@ void DoRace(Car *car, int minutes, Car *shMem)
 			// Car time is randomize
 			car->timeSectionMS[i] = RandomNumber(lowerTimeMinMS, upperTimeMaxMS);
 			
-			sleep(MSToSeconds(car->timeSectionMS[i])/10);
+			sleep((int)((MSToSeconds(car->timeSectionMS[i])/5)));
 
 			// if the car is doing a better time 
 			if (!car->bestTimeSectionMS[i]|| car->bestTimeSectionMS[i] > car->timeSectionMS[i])
@@ -162,21 +162,22 @@ int RandomNumber(int min, int max)
 
 void WriteInSharedMemory(Car *shMem, Car *car)
 {    
+
     if (sem_wait(semaChildId) < 0)
     {
-        perror("sem_wait error ");
+        perror("sem_wait child error ");
     }
-
-	memcpy(shMem, car, sizeof(*car));
 	
+	memcpy(shMem, car, sizeof(*car));
+
 	if (sem_post(semaParentId) < 0)
-    {
-        perror("sem_post error ");
-    }
+	{
+		perror("sem_post parent error ");
+	}
 
     if (sem_post(semaChildId) < 0)
     {
-        perror("sem_post error ");
+        perror("sem_post child error ");
     }
 }
 
@@ -184,7 +185,7 @@ void sigint()
 {
 	if (sem_close(semaParentId) != 0)
 	{
-		perror("sem_close error "); 
+		perror("sem_close parent error "); 
 		exit(EXIT_FAILURE);
 	}
 
