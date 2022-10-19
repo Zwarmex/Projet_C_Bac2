@@ -92,47 +92,47 @@ char *returnBestTime(int timeMS, char *buff)
     return buff;
 }
 
-// void WhileChildrenAreBusy()
-// {
-//     if(sem_wait(semaParentId) < 0)
-//     {
-//         perror("sem_wait parent error ");
-//         exit(EXIT_FAILURE);
-//     }
+void WhileChildrenAreBusy(void)
+{
+    if(sem_wait(semaParentId) < 0)
+    {
+        perror("sem_wait parent error ");
+        exit(EXIT_FAILURE);
+    }
 
-//     if (sem_wait(semaChildId) < 0)
-//     {
-//         perror("sem_wait parent error ");
-//         exit(EXIT_FAILURE);
-//     }
+    if (sem_wait(semaChildId) < 0)
+    {
+        perror("sem_wait parent error ");
+        exit(EXIT_FAILURE);
+    }
 
-//     int value;
+    int value;
 
-//     if (sem_getvalue(semaParentId, &value) < 0)
-//     {
-//         perror("sem_getvalue parent error ");
-//         exit(EXIT_FAILURE);
-//     }
-//     while (value > 0)
-//     {
-//         if(sem_wait(semaParentId) < 0)
-//         {
-//             perror("sem_wait parent error ");
-//             exit(EXIT_FAILURE);
-//         }
+    if (sem_getvalue(semaParentId, &value) < 0)
+    {
+        perror("sem_getvalue parent error ");
+        exit(EXIT_FAILURE);
+    }
+    while (value > 0)
+    {
+        if(sem_wait(semaParentId) < 0)
+        {
+            perror("sem_wait parent error ");
+            exit(EXIT_FAILURE);
+        }
 
-//         if (sem_getvalue(semaParentId, &value) < 0)
-//         {
-//             perror("sem_getvalue parent error ");
-//             exit(EXIT_FAILURE);
-//         }
-//     }
+        if (sem_getvalue(semaParentId, &value) < 0)
+        {
+            perror("sem_getvalue parent error ");
+            exit(EXIT_FAILURE);
+        }
+    }
 
-//     PrintScore(shMem);
+    PrintScore(shMem);
 
-//     if (sem_post(semaChildId) < 0)
-//     {
-//         perror("sem_post parent error ");
-//         exit(EXIT_FAILURE);
-//     }
-// }
+    if (sem_post(semaChildId) < 0)
+    {
+        perror("sem_post parent error ");
+        exit(EXIT_FAILURE);
+    }
+}

@@ -11,6 +11,7 @@
 #include "Headers/FunctionsCars.h"
 #include "Headers/FunctionsPrinting.h"
 
+
 int main() // Add boolClassicWeekEnd in arg
 {
 	atexit(EndOfProgram);
@@ -48,93 +49,45 @@ int main() // Add boolClassicWeekEnd in arg
 	// Classic Weekend
 	if (boolClassicWeekEnd == 1)
     {
-
-		// For each child
-		for (int i = 0; i < NUMBEROFCARS; i++)
+		// 3 Free try 
+		for (int k = 0;  k < 3; k++)
 		{
-			int pidFork = fork();
-			// Fork and check errors
-			if (pidFork == -1)
+			// For each child
+			for (int i = 0; i < NUMBEROFCARS; i++)
 			{
-				perror("fork error ");
-				exit(EXIT_FAILURE);
-			}
+				int pidFork = fork();
+				// Fork and check errors
+				if (pidFork == -1)
+				{
+					perror("fork error ");
+					exit(EXIT_FAILURE);
+				}
 
-			// Get the sh m from the id
-			if ((shMem = (Car *) shmat(shmId, NULL, 0)) < 0)
+				// Get the sh m from the id
+				if ((shMem = (Car *) shmat(shmId, NULL, 0)) < 0)
+				{
+					perror("shmat error ");
+					exit(EXIT_FAILURE);
+				}
+
+				// Child (a car)
+				if (!pidFork)
+				{
+					// Put seed number in rand with pid of the processus
+					srand(time(NULL) ^ getpid());
+
+					DoRace(&arrayCars[i], 60, &shMem[i]);
+
+					// Child have to not make another child
+					exit(EXIT_SUCCESS);
+				}
+			}
+			int statusWait;
+			while (wait(&statusWait))
 			{
-				perror("shmat error ");
-				exit(EXIT_FAILURE);
-			}
-
-			// Child (a car)
-			if (!pidFork)
-			{
-				// Put seed number in rand with pid of the processus
-				srand(time(NULL) ^ getpid());
-
-				DoRace(&arrayCars[i], 60, &shMem[i]);
-				DoRace(&arrayCars[i], 60, &shMem[i]);
-				DoRace(&arrayCars[i], 60, &shMem[i]);
-
-				// Child have to not make another child
-				exit(EXIT_SUCCESS);
-			}
+				WhileChildrenAreBusy();
+			}			
 		}
-	}
-	while (1)
-	{	
-		// Wait that a child wrote in shm
-		if(sem_wait(semaParentId) < 0)
-		{
-			perror("sem_wait parent error ");
-			exit(EXIT_FAILURE);
-		}
-
-		// Wait for read the shm
-		if (sem_wait(semaChildId) < 0)
-		{
-			perror("sem_wait parent error ");
-			exit(EXIT_FAILURE);
-		}
-
-		int value;
-
-		if (sem_getvalue(semaParentId, &value) < 0)
-		{
-			perror("sem_getvalue parent error ");
-			exit(EXIT_FAILURE);
-		}
-
-		// Decrementing sema parent 
-		while (value > 0)
-		{
-			if(sem_wait(semaParentId) < 0)
-			{
-				perror("sem_wait parent error ");
-				exit(EXIT_FAILURE);
-			}
-			if (sem_getvalue(semaParentId, &value) < 0)
-			{
-				perror("sem_getvalue parent error ");
-				exit(EXIT_FAILURE);
-			}
-		}
-		// Critical section
-
-		PrintScore(shMem);
-
-		// printf("parent section critical\n");
-
-		// Unlock the shm
-		if (sem_post(semaChildId) < 0)
-		{
-			perror("sem_post parent error ");
-			exit(EXIT_FAILURE);
-		}
-	}
-}	
-
 		
 		// Q1
 		// for (int i = 0; i < NUMBEROFCARS; i++)
@@ -165,3 +118,7 @@ int main() // Add boolClassicWeekEnd in arg
 		// }		
 		// Car *sortedArrayCars = SortArrayCars(shMem);
 		// printf("week end over\n");
+	}
+
+	
+}

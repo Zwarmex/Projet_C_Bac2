@@ -4,6 +4,6 @@
 
 int main(int argc, char const *argv[])
 {
-    printf("test\033[1;1HTest\n");
+    printf("\033[47m\033[30mTest1  Test2\n\033[39m\033[49m");
     return 0;
 }
