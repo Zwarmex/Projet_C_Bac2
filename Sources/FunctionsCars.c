@@ -74,8 +74,12 @@ void DoRace(Car *car, int minutes, Car *shMem)
 		{
 			// Car time is randomize
 			car->timeSectionMS[i] = RandomNumber(lowerTimeMinMS, upperTimeMaxMS);
-			
-			sleep((int)((MSToSeconds(car->timeSectionMS[i])/2)));
+			int seconds = (int)(MSToSeconds(car->timeSectionMS[i])/5);
+			if(sleep(seconds) == seconds)
+			{
+				perror("sleep error ");
+				exit(EXIT_FAILURE);
+			}
 
 			// if the car is doing a better time 
 			if (!car->bestTimeSectionMS[i]|| car->bestTimeSectionMS[i] > car->timeSectionMS[i])
@@ -100,11 +104,13 @@ void DoRace(Car *car, int minutes, Car *shMem)
 		{
 			car->bestTimeTurnMS = car->timeTurnMS;
 		}
+		
+		WriteInSharedMemory(shMem, car);
 
-		if(RandomNumber(0, 100) == 1)
-		{
-			boolContinueTesting = 0;
-		}
+		// if(RandomNumber(0, 100) == 1)
+		// {
+		// 	boolContinueTesting = 0;
+		// }
 
 		if(RandomNumber(0, 500) == 1)
 		{
@@ -164,6 +170,7 @@ void WriteInSharedMemory(Car *shMem, Car *car)
     if (sem_wait(semaChildId) < 0)
     {
         perror("sem_wait child error ");
+		exit(EXIT_FAILURE);
     }
 	
 	memcpy(shMem, car, sizeof(*car));
@@ -171,22 +178,30 @@ void WriteInSharedMemory(Car *shMem, Car *car)
 	if (sem_post(semaParentId) < 0)
 	{
 		perror("sem_post parent error ");
+		exit(EXIT_FAILURE);
 	}
 
     if (sem_post(semaChildId) < 0)
     {
         perror("sem_post child error ");
+		exit(EXIT_FAILURE);
     }
 }
 
-void EndOfProgram()
+void EndOfProgramParent()
 {
 	shmdt(shMem);
 	sem_unlink(semaChildName);
 	sem_unlink(semaParentName);
 	sem_close(semaChildId);
 	sem_close(semaParentId);
-	shmdt(shMem);
 	shmctl(shmId, IPC_RMID, 0);
+}
+
+void EndOfProgramChild()
+{
+	shmdt(shMem);
+	sem_unlink(semaChildName);
+	sem_unlink(semaParentName);
 	exit(EXIT_SUCCESS);
 }

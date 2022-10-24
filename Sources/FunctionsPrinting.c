@@ -9,9 +9,9 @@ void PrintScore(Car *arrayCars)
 	for (int i = 0; i < NUMBEROFCARS; i++)
 	{
 		Car *car = (Car *) (&sortedArrayCars[i]);
-		char *arrayBuffersTime[4];
+		char *arrayBuffersTime[5];
         int row = 2;
-		for (int i = 0; i < 4; i++)
+		for (int i = 0; i < 5; i++)
 		{
 			if(!(arrayBuffersTime[i] = malloc(sizeof(":") * 3 + sizeof(int) * 4)))
 			{
@@ -20,12 +20,12 @@ void PrintScore(Car *arrayCars)
 			}
 		}
 		
-		printf("%d		%s		%s		%s		%s		%s		%s\r\n", 
+		printf("%d		%s		%s		%s		%s		%s		%s      %s\r\n", 
 		car->id, returnBestTime(car->timeSectionMS[0], arrayBuffersTime[0]), returnBestTime(car->timeSectionMS[1], arrayBuffersTime[1]), 
 		returnBestTime(car->timeSectionMS[2], arrayBuffersTime[2]), returnBestTime(car->bestTimeTurnMS, arrayBuffersTime[3]), 
-		(car->state == 2)?"True":"False", (car->state == 1)?"True":"False");
+		(car->state == 2)?"True":"False", (car->state == 1)?"True":"False", returnBestTime(car->totalTurnMS, arrayBuffersTime[4]));
 
-		for (int i = 0; i < 4; i++)
+		for (int i = 0; i < 5; i++)
 		{
 			free(arrayBuffersTime[i]);
 		}
@@ -44,26 +44,18 @@ char *returnBestTime(int timeMS, char *buff)
 
     if (hours)
     {
-        char hoursTime[3], hoursTmp[3];
-        len = sprintf(hoursTmp, "%d", hours);
-        while (len < 2)
-        {
-            len = sprintf(hoursTime, "%s%s", "0", hoursTmp);
-        }       
+        char hoursTime[3];
+        sprintf(hoursTime, "%02d", hours);
 
         strcat(buff, hoursTime);
         strcat(buff, ":");
-
     }
 
     if (minutes || hours)
     {
-        char minutesTime[3], minutesTmp[3];
-        len = sprintf(minutesTmp, "%d", minutes);
-        while (len < 2)
-        {
-            len = sprintf(minutesTime, "%s%s", "0", minutesTmp);
-        }
+        char minutesTime[3];
+        sprintf(minutesTime, "%02d", minutes);
+
 
         strcat(buff, minutesTime);
         strcat(buff, ":");
@@ -71,12 +63,10 @@ char *returnBestTime(int timeMS, char *buff)
 
     if (seconds || minutes || hours)
     {
-        char secondsTime[3], zeros[] = "0";
-        len = sprintf(secondsTime, "%d", seconds);
-        char * buffTmp = len < 2 ? zeros + 2 - len : zeros;
-        sprintf(buffTmp, "%s", secondsTime);
-
-        strcat(buff, buffTmp);
+        char secondsTime[3];
+        sprintf(secondsTime, "%02d", seconds);
+        
+        strcat(buff, secondsTime);
         strcat(buff, ":");
     }
 

@@ -9,6 +9,7 @@
 #include <signal.h>
 #include <sys/stat.h>
 #include <sys/prctl.h>
+#include <wait.h>
 #include "Headers/FunctionsCars.h"
 #include "Headers/FunctionsPrinting.h"
 
@@ -20,9 +21,6 @@ int main(int argc, char *argv[]) // Add boolClassicWeekEnd in arg
 		exit(EXIT_SUCCESS);
 	}
 	
-	atexit(EndOfProgram);
-	signal(SIGINT, EndOfProgram);
-
 	// Initialisation of variables
 	int shmSize = sizeof(Car) * NUMBEROFCARS,
 	arrayCarsId[NUMBEROFCARS] = {44, 63, 1, 11, 55, 16, 4, 3, 14, 31, 10, 22, 5, 18, 6, 23, 77, 24, 47, 9};
@@ -66,30 +64,49 @@ int main(int argc, char *argv[]) // Add boolClassicWeekEnd in arg
 				exit(EXIT_FAILURE);
 			}
 
-			// Get the sh m from the id
-			if ((shMem = (Car *) shmat(shmId, NULL, 0)) < 0)
-			{
-				perror("shmat error ");
-				exit(EXIT_FAILURE);
-			}
-
 			// Child (a car)
 			if (pidFork == 0 )
 			{
 				prctl(PR_SET_PDEATHSIG, SIGHUP);
-				signal(SIGHUP, EndOfProgram);
-				atexit(EndOfProgram);
+				signal(SIGHUP, EndOfProgramChild);
+				atexit(EndOfProgramChild);
 				// Put seed number in rand with pid of the processus
 				srand(time(NULL) ^ getpid());
+				// Get the sh m from the id
 
-				DoRace(&arrayCars[i], 60, &shMem[i]);
+				if ((shMem = (Car *) shmat(shmId, NULL, 0)) < 0)
+				{
+					perror("shmat error ");
+					exit(EXIT_FAILURE);
+				}
+
+				DoRace(&arrayCars[i], 2, &shMem[i]);
 
 				// Child have to not make another child
 				exit(EXIT_SUCCESS);
 			}
 		}
-		while (1)
+		//Parent process
+		atexit(EndOfProgramParent);
+		signal(SIGINT, EndOfProgramParent);
+
+		// Get the sh m from the id
+		if ((shMem = (Car *) shmat(shmId, NULL, 0)) < 0)
 		{
+			perror("shmat error ");
+			exit(EXIT_FAILURE);
+		}
+
+		// while minimum a child is alive 
+		int waitRespons, waitStatus;
+		while ((waitRespons = waitpid(-1, &waitStatus, WNOHANG)) !=-1)
+		{
+			// break if children are dead
+			if ((waitRespons = waitpid(-1, &waitStatus, WNOHANG)) == -1)
+			{
+				break;
+			}
+
 			// Wait that a child wrote in shm
 			if(sem_wait(semaParentId) < 0)
 			{
@@ -139,7 +156,29 @@ int main(int argc, char *argv[]) // Add boolClassicWeekEnd in arg
 				exit(EXIT_FAILURE);
 			}
 		}
+		// printf("\033c");
+		FILE *fp;
+		if(!(fp = fopen("ResultSaves/P1.txt", "w")))
+		{
+			perror("fopen error ");
+			exit(EXIT_FAILURE);
+		}
+		Car *sortedArrayCars = SortArrayCars(shMem);
+		for (int i = 0; i < NUMBEROFCARS; i++)
+		{
+			if((fprintf(fp, "%d\n", sortedArrayCars[i].id)) < 0)
+			{
+				perror("fprintf error ");
+				exit(EXIT_FAILURE);
+			}
+		}		
+		if((fclose(fp)) != 0)
+		{
+			perror("fclose error ");
+			exit(EXIT_FAILURE);
+		}
+		printf("\033cFinished\n");
 	}
-	
+	// printf("\033cFinished\n");
 	exit(EXIT_SUCCESS);
 }
