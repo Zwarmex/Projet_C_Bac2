@@ -68,7 +68,7 @@ int main() // Add boolClassicWeekEnd in arg
 			}
 
 			// Child (a car)
-			if (!pidFork)
+			if (pidFork ==)
 			{
 				// Put seed number in rand with pid of the processus
 				srand(time(NULL) ^ getpid());
@@ -83,7 +83,7 @@ int main() // Add boolClassicWeekEnd in arg
 		}
 	}
 	while (1)
-	{	
+	{
 		// Wait that a child wrote in shm
 		if(sem_wait(semaParentId) < 0)
 		{
