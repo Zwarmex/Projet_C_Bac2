@@ -200,7 +200,7 @@ int main(int argc, char *argv[]) // Add boolClassicWeekEnd in arg
 			exit(EXIT_FAILURE);
 		}
 		
-		printf("\033cFinished\n");
+		printf("Finished\n");
 	}
 	exit(EXIT_SUCCESS);
 }
