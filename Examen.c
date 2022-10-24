@@ -23,10 +23,9 @@ int main(int argc, char *argv[]) // Add boolClassicWeekEnd in arg
 	
 	// Initialisation of variables
 	int shmSize = sizeof(Car) * NUMBEROFCARS,
-	arrayCarsId[NUMBEROFCARS] = {44, 63, 1, 11, 55, 16, 4, 3, 14, 31, 10, 22, 5, 18, 6, 23, 77, 24, 47, 9};
-	
+	arrayCarsId[NUMBEROFCARS] = {44, 63, 1, 11, 55, 16, 4, 3, 14, 31, 10, 22, 5, 18, 6, 23, 77, 24, 47, 9};	
+	FILE *fp;
 	Car *arrayCars;
-
 	semaChildId = sem_open(semaChildName, O_CREAT, S_IRUSR | S_IWUSR, 1);
 	semaParentId = sem_open(semaParentName, O_CREAT, S_IRUSR | S_IWUSR, 0);
 
@@ -50,8 +49,8 @@ int main(int argc, char *argv[]) // Add boolClassicWeekEnd in arg
 		exit(EXIT_FAILURE);
 	}
 
-	// If P1
-	if (strcmp(argv[1], "P1") == 0)
+	// If P1 or P2 or P3
+	if ((strcmp(argv[1], "P1") == 0) || (strcmp(argv[1], "P2") == 0) || (strcmp(argv[1], "P3") == 0))
     {
 		// For each child
 		for (int i = 0; i < NUMBEROFCARS; i++)
@@ -122,7 +121,6 @@ int main(int argc, char *argv[]) // Add boolClassicWeekEnd in arg
 			}
 
 			int value;
-
 			if (sem_getvalue(semaParentId, &value) < 0)
 			{
 				perror("sem_getvalue parent error ");
@@ -156,13 +154,36 @@ int main(int argc, char *argv[]) // Add boolClassicWeekEnd in arg
 				exit(EXIT_FAILURE);
 			}
 		}
-		// printf("\033c");
+
+		printf("\033c\n");
 		FILE *fp;
-		if(!(fp = fopen("ResultSaves/P1.txt", "w")))
+		if (strcmp(argv[1], "P1") == 0)
 		{
-			perror("fopen error ");
-			exit(EXIT_FAILURE);
+			if (!(fp = fopen("ResultSaves/P1.txt", "w")))
+			{
+				perror("fopen error ");
+				exit(EXIT_FAILURE);
+			}
+		} 
+		
+		if (strcmp(argv[1], "P2") == 0)
+		{
+			if (!(fp = fopen("ResultSaves/P2.txt", "w")))
+			{
+				perror("fopen error ");
+				exit(EXIT_FAILURE);
+			}
+		} 
+
+		if (strcmp(argv[1], "P3") == 0)
+		{
+			if (!(fp = fopen("ResultSaves/P3.txt", "w")))
+			{
+				perror("fopen error ");
+				exit(EXIT_FAILURE);
+			}
 		}
+
 		Car *sortedArrayCars = SortArrayCars(shMem);
 		for (int i = 0; i < NUMBEROFCARS; i++)
 		{
@@ -171,14 +192,15 @@ int main(int argc, char *argv[]) // Add boolClassicWeekEnd in arg
 				perror("fprintf error ");
 				exit(EXIT_FAILURE);
 			}
-		}		
+		}
+
 		if((fclose(fp)) != 0)
 		{
 			perror("fclose error ");
 			exit(EXIT_FAILURE);
 		}
+		
 		printf("\033cFinished\n");
 	}
-	// printf("\033cFinished\n");
 	exit(EXIT_SUCCESS);
 }
