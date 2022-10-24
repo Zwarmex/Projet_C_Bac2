@@ -75,7 +75,7 @@ int main() // Add boolClassicWeekEnd in arg
 
 				DoRace(&arrayCars[i], 60, &shMem[i]);
 				DoRace(&arrayCars[i], 60, &shMem[i]);
-				DoRace(&arrayCars[i], 60, &shMem[i]);
+				cDoRace(&arrayCars[i], 60, &shMem[i]);
 
 				// Child have to not make another child
 				exit(EXIT_SUCCESS);
