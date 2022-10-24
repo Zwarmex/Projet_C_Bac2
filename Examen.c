@@ -68,7 +68,7 @@ int main() // Add boolClassicWeekEnd in arg
 			}
 
 			// Child (a car)
-			if (pidFork ==)
+			if (pidFork == 0 )
 			{
 				// Put seed number in rand with pid of the processus
 				srand(time(NULL) ^ getpid());
