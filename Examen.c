@@ -27,12 +27,12 @@ int main() // Add boolClassicWeekEnd in arg
 
 	if (semaChildId == SEM_FAILED || semaParentId == SEM_FAILED)
 	{
-		perror("sem_open child error ");
+		perror("sem_open error ");
 		exit(EXIT_FAILURE);
 	}
 
 	// Get id for the sh m
-	if((shmId = shmget(IPC_PRIVATE, shmSize, IPC_CREAT | 0775)) < 0)
+	if((shmId = shmget(IPC_PRIVATE, shmSize, IPC_CREAT | 0666)) < 0)
 	{
 		perror("shmget error ");
 		exit(EXIT_FAILURE);
@@ -68,7 +68,7 @@ int main() // Add boolClassicWeekEnd in arg
 			}
 
 			// Child (a car)
-			if (!pidFork)
+			if (pidFork == 0 )
 			{
 				// Put seed number in rand with pid of the processus
 				srand(time(NULL) ^ getpid());
@@ -83,7 +83,7 @@ int main() // Add boolClassicWeekEnd in arg
 		}
 	}
 	while (1)
-	{	
+	{
 		// Wait that a child wrote in shm
 		if(sem_wait(semaParentId) < 0)
 		{
