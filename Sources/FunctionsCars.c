@@ -172,6 +172,5 @@ void EndOfProgramChild()
 	sem_post(semaParentId);
 	sem_unlink(semaChildName);
 	sem_unlink(semaParentName);
-	// kill(getppid(), SIGINT);
 	exit(EXIT_SUCCESS);
 }

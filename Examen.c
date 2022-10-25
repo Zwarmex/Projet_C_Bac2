@@ -430,11 +430,23 @@ int main(int argc, char *argv[]) // Add boolClassicWeekEnd in arg
 	// while minimum a child is alive 
 	while ((waitRespons = waitpid(-1, &waitStatus, WNOHANG)) !=-1)
 	{
+		// break if children are dead
+		if ((waitRespons = waitpid(-1, &waitStatus, WNOHANG)) == -1)
+		{
+			break;
+		}
+		
 		// Wait that a child wrote in shm
 		if(sem_wait(semaParentId) < 0)
 		{
 			perror("sem_wait parent error ");
 			exit(EXIT_FAILURE);
+		}
+
+		// break if children are dead
+		if ((waitRespons = waitpid(-1, &waitStatus, WNOHANG)) == -1)
+		{
+			break;
 		}
 
 		// Wait for read the shm
@@ -477,7 +489,7 @@ int main(int argc, char *argv[]) // Add boolClassicWeekEnd in arg
 			PrintScore(shMem, NUMBER_OF_CARS_Q2);
 		}
 		
-		else if (strcmp(argv[1], "Q3") == 0)
+		else if (strcmp(argv[1], "Q3") == 0 || strcmp(argv[1], "Race") == 0)
 		{
 			PrintScore(shMem, NUMBER_OF_CARS_Q3);
 		}
