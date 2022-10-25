@@ -22,7 +22,7 @@ int main(int argc, char *argv[]) // Add boolClassicWeekEnd in arg
 	}
 	
 	// Initialisation of variables
-	int shmSize = sizeof(Car) * NUMBEROFCARS;
+	int shmSize = sizeof(Car) * NUMBEROFCARS, minutesOfRace = atoi(argv[2]);
 	FILE *fp;
 	Car *arrayCars;
 	semaChildId = sem_open(semaChildName, O_CREAT, S_IRUSR | S_IWUSR, 1);
@@ -83,134 +83,17 @@ int main(int argc, char *argv[]) // Add boolClassicWeekEnd in arg
 					exit(EXIT_FAILURE);
 				}
 
-				DoRace(&arrayCars[i], 2, &shMem[i]);
+				DoRace(&arrayCars[i], minutesOfRace, &shMem[i]);
 
 				// Child have to not make another child
 				exit(EXIT_SUCCESS);
 			}
 		}
-		//Parent process
-		atexit(EndOfProgramParent);
-		signal(SIGINT, EndOfProgramParent);
-
-		// Get the sh m from the id
-		if ((shMem = (Car *) shmat(shmId, NULL, 0)) < 0)
-		{
-			perror("shmat error ");
-			exit(EXIT_FAILURE);
-		}
-
-		// while minimum a child is alive 
-		int waitRespons, waitStatus;
-		while ((waitRespons = waitpid(-1, &waitStatus, WNOHANG)) !=-1)
-		{
-			// break if children are dead
-			if ((waitRespons = waitpid(-1, &waitStatus, WNOHANG)) == -1)
-			{
-				break;
-			}
-
-			// Wait that a child wrote in shm
-			if(sem_wait(semaParentId) < 0)
-			{
-				perror("sem_wait parent error ");
-				exit(EXIT_FAILURE);
-			}
-
-			// Wait for read the shm
-			if (sem_wait(semaChildId) < 0)
-			{
-				perror("sem_wait parent error ");
-				exit(EXIT_FAILURE);
-			}
-
-			int value;
-			if (sem_getvalue(semaParentId, &value) < 0)
-			{
-				perror("sem_getvalue parent error ");
-				exit(EXIT_FAILURE);
-			}
-
-			// Decrementing sema parent 
-			while (value > 0)
-			{
-				if(sem_wait(semaParentId) < 0)
-				{
-					perror("sem_wait parent error ");
-					exit(EXIT_FAILURE);
-				}
-				if (sem_getvalue(semaParentId, &value) < 0)
-				{
-					perror("sem_getvalue parent error ");
-					exit(EXIT_FAILURE);
-				}
-			}
-			// Critical section
-
-			PrintScore(shMem);
-
-			// printf("parent section critical\n");
-
-			// Unlock the shm
-			if (sem_post(semaChildId) < 0)
-			{
-				perror("sem_post parent error ");
-				exit(EXIT_FAILURE);
-			}
-		}
-
-		printf("\033c\n");
-		FILE *fp;
-		if (strcmp(argv[1], "P1") == 0)
-		{
-			if (!(fp = fopen("ResultSaves/P1.txt", "w")))
-			{
-				perror("fopen error ");
-				exit(EXIT_FAILURE);
-			}
-		} 
-		
-		if (strcmp(argv[1], "P2") == 0)
-		{
-			if (!(fp = fopen("ResultSaves/P2.txt", "w")))
-			{
-				perror("fopen error ");
-				exit(EXIT_FAILURE);
-			}
-		} 
-
-		if (strcmp(argv[1], "P3") == 0)
-		{
-			if (!(fp = fopen("ResultSaves/P3.txt", "w")))
-			{
-				perror("fopen error ");
-				exit(EXIT_FAILURE);
-			}
-		}
-
-		Car *sortedArrayCars = SortArrayCars(shMem);
-		for (int i = 0; i < NUMBEROFCARS; i++)
-		{
-			if((fprintf(fp, "%d\n", sortedArrayCars[i].id)) < 0)
-			{
-				perror("fprintf error ");
-				exit(EXIT_FAILURE);
-			}
-		}
-
-		if((fclose(fp)) != 0)
-		{
-			perror("fclose error ");
-			exit(EXIT_FAILURE);
-		}
-		
-		printf("Finished\n");
 	}
 	
 	// If Q1
 	else if (strcmp(argv[1], "Q1") == 0)
 	{
-
 		int arrayCarsId[NUMBEROFCARS], counter = 0;	
 		FILE *P3File = fopen("ResultSaves/P3.txt", "r");
 		if (!P3File)
@@ -271,108 +154,135 @@ int main(int argc, char *argv[]) // Add boolClassicWeekEnd in arg
 					exit(EXIT_FAILURE);
 				}
 				
-
-				DoRace(&arrayCars[i], 2, &shMem[i]);
+				DoRace(&arrayCars[i], minutesOfRace, &shMem[i]);
 
 				// Child have to not make another child
 				exit(EXIT_SUCCESS);
 			}
 		}
-		//Parent process
-		atexit(EndOfProgramParent);
-		signal(SIGINT, EndOfProgramParent);
+	}
+	//Parent process
+	atexit(EndOfProgramParent);
+	signal(SIGINT, EndOfProgramParent);
 
-		// Get the sh m from the id
-		if ((shMem = (Car *) shmat(shmId, NULL, 0)) < 0)
+	// Get the sh m from the id
+	if ((shMem = (Car *) shmat(shmId, NULL, 0)) < 0)
+	{
+		perror("shmat error ");
+		exit(EXIT_FAILURE);
+	}
+
+	int waitRespons, waitStatus;
+	// while minimum a child is alive 
+	while ((waitRespons = waitpid(-1, &waitStatus, WNOHANG)) !=-1)
+	{
+		// break if children are dead
+
+		// Wait that a child wrote in shm
+		if(sem_wait(semaParentId) < 0)
 		{
-			perror("shmat error ");
+			perror("sem_wait parent error ");
 			exit(EXIT_FAILURE);
 		}
 
-		int waitRespons, waitStatus;
-		// while minimum a child is alive 
-		while ((waitRespons = waitpid(-1, &waitStatus, WNOHANG)) !=-1)
+		// Wait for read the shm
+		if (sem_wait(semaChildId) < 0)
 		{
-			// break if children are dead
-			if ((waitRespons = waitpid(-1, &waitStatus, WNOHANG)) == -1)
-			{
-				break;
-			}
+			perror("sem_wait parent error ");
+			exit(EXIT_FAILURE);
+		}
 
-			// Wait that a child wrote in shm
+		int value;
+		if (sem_getvalue(semaParentId, &value) < 0)
+		{
+			perror("sem_getvalue parent error ");
+			exit(EXIT_FAILURE);
+		}
+
+		// Decrementing sema parent 
+		while (value > 0)
+		{
 			if(sem_wait(semaParentId) < 0)
 			{
 				perror("sem_wait parent error ");
 				exit(EXIT_FAILURE);
 			}
-
-			// Wait for read the shm
-			if (sem_wait(semaChildId) < 0)
-			{
-				perror("sem_wait parent error ");
-				exit(EXIT_FAILURE);
-			}
-
-			int value;
 			if (sem_getvalue(semaParentId, &value) < 0)
 			{
 				perror("sem_getvalue parent error ");
 				exit(EXIT_FAILURE);
 			}
-
-			// Decrementing sema parent 
-			while (value > 0)
-			{
-				if(sem_wait(semaParentId) < 0)
-				{
-					perror("sem_wait parent error ");
-					exit(EXIT_FAILURE);
-				}
-				if (sem_getvalue(semaParentId, &value) < 0)
-				{
-					perror("sem_getvalue parent error ");
-					exit(EXIT_FAILURE);
-				}
-			}
-			// Critical section
-
-			PrintScore(shMem);
-
-			// printf("parent section critical\n");
-
-			// Unlock the shm
-			if (sem_post(semaChildId) < 0)
-			{
-				perror("sem_post parent error ");
-				exit(EXIT_FAILURE);
-			}
 		}
+		// Critical section
 
-		printf("\033c\n");
-		FILE *fp;
-		if (!(fp = fopen("ResultSaves/Q1.txt", "w")))
-			{
-				perror("fopen error ");
-				exit(EXIT_FAILURE);
-			}
+		PrintScore(shMem);
 
-		Car *sortedArrayCars = SortArrayCars(shMem);
-		for (int i = 0; i < NUMBEROFCARS; i++)
+		// Unlock the shm
+		if (sem_post(semaChildId) < 0)
 		{
-			if((fprintf(fp, "%d\n", sortedArrayCars[i].id)) < 0)
-			{
-				perror("fprintf error ");
-				exit(EXIT_FAILURE);
-			}
-		}
-
-		if((fclose(fp)) != 0)
-		{
-			perror("fclose error ");
+			perror("sem_post parent error ");
 			exit(EXIT_FAILURE);
 		}
 		
-		printf("Finished\n");
+		if ((waitRespons = waitpid(-1, &waitStatus, WNOHANG)) == -1)
+		{
+			break;
+		}
 	}
+	
+	printf("\033c\n");
+	if (strcmp(argv[1], "P1") == 0)
+	{
+		if (!(fp = fopen("ResultSaves/P1.txt", "w")))
+		{
+			perror("fopen error ");
+			exit(EXIT_FAILURE);
+		}
+	} 
+	
+	else if (strcmp(argv[1], "P2") == 0)
+	{
+		if (!(fp = fopen("ResultSaves/P2.txt", "w")))
+		{
+			perror("fopen error ");
+			exit(EXIT_FAILURE);
+		}
+	} 
+
+	else if (strcmp(argv[1], "P3") == 0)
+	{
+		if (!(fp = fopen("ResultSaves/P3.txt", "w")))
+		{
+			perror("fopen error ");
+			exit(EXIT_FAILURE);
+		}
+	}
+	
+	else if (strcmp(argv[1], "Q1") == 0)
+	{
+		if (!(fp = fopen("ResultSaves/Q1.txt", "w")))
+		{
+			perror("fopen error ");
+			exit(EXIT_FAILURE);
+		}
+	}
+	
+	Car *sortedArrayCars = SortArrayCars(shMem);
+	for (int i = 0; i < NUMBEROFCARS; i++)
+	{
+		if((fprintf(fp, "%d\n", sortedArrayCars[i].id)) < 0)
+		{
+			perror("fprintf error ");
+			exit(EXIT_FAILURE);
+		}
+	}
+
+	if((fclose(fp)) != 0)
+	{
+		perror("fclose error ");
+		exit(EXIT_FAILURE);
+	}
+	
+	printf("Finished\n");
 	exit(EXIT_SUCCESS);
 }
