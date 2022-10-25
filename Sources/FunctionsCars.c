@@ -162,6 +162,7 @@ void EndOfProgramParent()
 	sem_close(semaChildId);
 	sem_close(semaParentId);
 	shmctl(shmId, IPC_RMID, 0);
+	exit(EXIT_SUCCESS);
 }
 
 void EndOfProgramChild()
@@ -171,5 +172,6 @@ void EndOfProgramChild()
 	sem_post(semaParentId);
 	sem_unlink(semaChildName);
 	sem_unlink(semaParentName);
+	// kill(getppid(), SIGINT);
 	exit(EXIT_SUCCESS);
 }
