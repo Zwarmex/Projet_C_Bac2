@@ -22,9 +22,10 @@
 	Car *shMem;
 	int shmId;
 	
-	#define NUMBEROFCARS 20
-	#define NUMBEROFCARSQ2 15
-	#define LENGTHARRAY(array) (sizeof(array)/sizeof(*array))
+	#define NUMBER_OF_CARS 20
+	#define NUMBER_OF_CARS_Q2 15
+	#define NUMBER_OF_CARS_Q3 10
+	#define LENGTH_ARRAY(array) (sizeof(array)/sizeof(*array))
 	#include "../Sources/FunctionsCars.c"
 
 #endif

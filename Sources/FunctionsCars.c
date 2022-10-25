@@ -26,7 +26,7 @@ void EnterThePits(Car *car)
 
 Car *CarBuilder(int arrayId[], int size)
 {
-	static Car arrayCarsTMP[NUMBEROFCARS];
+	static Car arrayCarsTMP[NUMBER_OF_CARS];
 
 	for (int i = 0; i < size; i++)
 	{
@@ -45,7 +45,7 @@ void InitialisationCar(Car *car)
 	// car->lastTurnMS = 0;
 	car->state = 0; // Ready to starting
 	car->totalTurnMS = 0;
-	for (int j = 0; j < LENGTHARRAY(car->timeSectionMS); j++)
+	for (int j = 0; j < LENGTH_ARRAY(car->timeSectionMS); j++)
 	{
 		car->timeSectionMS[j] = 0;
 		car->bestTimeSectionMS[j] = 0;
@@ -67,7 +67,7 @@ void DoRace(Car *car, int minutes, Car *shMem)
 		car->timeTurnMS = 0;
 
 		// For each sections
-		for (int i = 0; i < LENGTHARRAY(car->timeSectionMS); ++i)
+		for (int i = 0; i < LENGTH_ARRAY(car->timeSectionMS); ++i)
 		{
 			// Car time is randomize
 			car->timeSectionMS[i] = RandomNumber(lowerTimeMinMS, upperTimeMaxMS);

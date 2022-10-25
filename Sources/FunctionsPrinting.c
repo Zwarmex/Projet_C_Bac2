@@ -85,19 +85,19 @@ char *returnBestTime(int timeMS, char *buff)
 // Function to perform Sort array of cars
 Car *SortArrayCars(Car *arrayCars)
 {
-	static Car copyArrayCars[NUMBEROFCARS];
+	static Car copyArrayCars[NUMBER_OF_CARS];
 	// Copy the array of cars into a new one.
-	for (int i = 0; i < NUMBEROFCARS; i++)
+	for (int i = 0; i < NUMBER_OF_CARS; i++)
 	{
 		copyArrayCars[i] = arrayCars[i];
 	}
 	
     // One by one move boundary of unsorted subarray
-    for (int i = 0; i < NUMBEROFCARS - 1; i++) 
+    for (int i = 0; i < NUMBER_OF_CARS - 1; i++) 
 	{
         // Find the minimum element in unsorted array
         int minId = i;
-        for (int j = i + 1; j < NUMBEROFCARS; j++)
+        for (int j = i + 1; j < NUMBER_OF_CARS; j++)
         {
             if (copyArrayCars[j].bestTimeTurnMS < copyArrayCars[minId].bestTimeTurnMS && copyArrayCars[j].bestTimeTurnMS != 0)
             {
