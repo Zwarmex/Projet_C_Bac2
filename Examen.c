@@ -22,8 +22,7 @@ int main(int argc, char *argv[]) // Add boolClassicWeekEnd in arg
 	}
 	
 	// Initialisation of variables
-	int shmSize = sizeof(Car) * NUMBEROFCARS, minutesOfRace = atoi(argv[2]);
-	FILE *fp;
+	int minutesOfRace = atoi(argv[2]);
 	Car *arrayCars;
 	semaChildId = sem_open(semaChildName, O_CREAT, S_IRUSR | S_IWUSR, 1);
 	semaParentId = sem_open(semaParentName, O_CREAT, S_IRUSR | S_IWUSR, 0);
@@ -34,17 +33,20 @@ int main(int argc, char *argv[]) // Add boolClassicWeekEnd in arg
 		exit(EXIT_FAILURE);
 	}
 
-	// Get id for the sh m
-	if((shmId = shmget(IPC_PRIVATE, shmSize, IPC_CREAT | 0666)) < 0)
-	{
-		perror("shmget error ");
-		exit(EXIT_FAILURE);
-	}
+	
 
 
 	// If P1 or P2 or P3
 	if ((strcmp(argv[1], "P1") == 0) || (strcmp(argv[1], "P2") == 0) || (strcmp(argv[1], "P3") == 0))
     {
+		int shmSize = sizeof(Car) * NUMBEROFCARS;
+		// Get id for the sh m
+		if((shmId = shmget(IPC_PRIVATE, shmSize, IPC_CREAT | 0666)) < 0)
+		{
+			perror("shmget error ");
+			exit(EXIT_FAILURE);
+		}
+
 		// For each child
 		for (int i = 0; i < NUMBEROFCARS; i++)
 		{
@@ -77,7 +79,7 @@ int main(int argc, char *argv[]) // Add boolClassicWeekEnd in arg
 				int arrayCarsId[NUMBEROFCARS] = {44, 63, 1, 11, 55, 16, 4, 3, 14, 31, 10, 22, 5, 18, 6, 23, 77, 24, 47, 9};	
 				
 				// Create array of cars
-				if (!(arrayCars = CarBuilder(arrayCarsId)))
+				if (!(arrayCars = CarBuilder(arrayCarsId, NUMBEROFCARS)))
 				{
 					printf("CarBuilder error");
 					exit(EXIT_FAILURE);
@@ -94,6 +96,14 @@ int main(int argc, char *argv[]) // Add boolClassicWeekEnd in arg
 	// If Q1
 	else if (strcmp(argv[1], "Q1") == 0)
 	{
+		int shmSize = sizeof(Car) * NUMBEROFCARS;
+		// Get id for the sh m
+		if((shmId = shmget(IPC_PRIVATE, shmSize, IPC_CREAT | 0666)) < 0)
+		{
+			perror("shmget error ");
+			exit(EXIT_FAILURE);
+		}
+
 		int arrayCarsId[NUMBEROFCARS], counter = 0;	
 		FILE *P3File = fopen("ResultSaves/P3.txt", "r");
 		if (!P3File)
@@ -120,7 +130,7 @@ int main(int argc, char *argv[]) // Add boolClassicWeekEnd in arg
 		}
 
 		// Create array of cars
-		if (!(arrayCars = CarBuilder(arrayCarsId)))
+		if (!(arrayCars = CarBuilder(arrayCarsId, NUMBEROFCARS)))
 		{
 			printf("CarBuilder error");
 			exit(EXIT_FAILURE);
@@ -161,6 +171,93 @@ int main(int argc, char *argv[]) // Add boolClassicWeekEnd in arg
 			}
 		}
 	}
+
+	else if (strcmp(argv[1], "Q2") == 0)
+	{
+		int shmSize = sizeof(Car) * NUMBEROFCARSQ2;
+		// Get id for the sh m
+		if((shmId = shmget(IPC_PRIVATE, shmSize, IPC_CREAT | 0666)) < 0)
+		{
+			perror("shmget error ");
+			exit(EXIT_FAILURE);
+		}
+
+		int arrayCarsId[NUMBEROFCARSQ2], counter = 0;	
+		FILE *PFile = fopen("ResultSaves/Q1.txt", "r");
+		if (!PFile)
+		{
+			perror("fopen error ");
+			exit(EXIT_FAILURE);
+		}
+		
+		char currentline[3];
+
+		while ((fgets(currentline, sizeof(currentline), PFile) != NULL) && (counter < NUMBEROFCARSQ2)) 
+		{
+			if (*currentline != '\n')
+			{					
+				// printf("got line: %s\n", currentline);
+				arrayCarsId[counter] = atoi(currentline);
+				counter++;
+			}
+		}
+		
+		if(fclose(PFile) != 0)
+		{
+			perror("fclose error ");
+			exit(EXIT_FAILURE);
+		}
+
+		// Create array of cars
+		if (!(arrayCars = CarBuilder(arrayCarsId, NUMBEROFCARSQ2)))
+		{
+			printf("CarBuilder error");
+			exit(EXIT_FAILURE);
+		}
+		
+		// For each child
+		for (int i = 0; i < NUMBEROFCARSQ2; i++)
+		{
+			int pidFork = fork();
+			// Fork and check errors
+			if (pidFork == -1)
+			{
+				perror("fork error ");
+				exit(EXIT_FAILURE);
+			}
+
+			// Child (a car)
+			if (pidFork == 0 )
+			{
+				prctl(PR_SET_PDEATHSIG, SIGHUP);
+				signal(SIGHUP, EndOfProgramChild);
+				atexit(EndOfProgramChild);
+
+				// Put seed number in rand with pid of the processus
+				srand(time(NULL) ^ getpid());
+				
+				// Get the sh m from the id
+				if ((shMem = (Car *) shmat(shmId, NULL, 0)) < 0)
+				{
+					perror("shmat error ");
+					exit(EXIT_FAILURE);
+				}
+				
+				DoRace(&arrayCars[i], minutesOfRace, &shMem[i]);
+
+				// Child have to not make another child
+				exit(EXIT_SUCCESS);
+			}
+		}
+	}
+
+	else
+	{
+		printf("No race choosen\n");
+		exit(EXIT_SUCCESS);
+	}
+
+
 	//Parent process
 	atexit(EndOfProgramParent);
 	signal(SIGINT, EndOfProgramParent);
@@ -215,7 +312,14 @@ int main(int argc, char *argv[]) // Add boolClassicWeekEnd in arg
 		}
 		// Critical section
 
-		PrintScore(shMem);
+		if (strcmp(argv[1], "P1") == 0 || strcmp(argv[1], "P2") == 0 || strcmp(argv[1], "P3") == 0 || strcmp(argv[1], "Q1") == 0)
+		{
+			PrintScore(shMem, NUMBEROFCARS);
+		}
+		else if (strcmp(argv[1], "Q2") == 0)
+		{
+			PrintScore(shMem, NUMBEROFCARSQ2);
+		}
 
 		// Unlock the shm
 		if (sem_post(semaChildId) < 0)
@@ -229,8 +333,9 @@ int main(int argc, char *argv[]) // Add boolClassicWeekEnd in arg
 			break;
 		}
 	}
-	
-	printf("\033c\n");
+		
+	FILE *fp;
+
 	if (strcmp(argv[1], "P1") == 0)
 	{
 		if (!(fp = fopen("ResultSaves/P1.txt", "w")))
@@ -267,13 +372,25 @@ int main(int argc, char *argv[]) // Add boolClassicWeekEnd in arg
 		}
 	}
 	
+	else if (strcmp(argv[1], "Q2") == 0)
+	{
+		if (!(fp = fopen("ResultSaves/Q2.txt", "w")))
+		{
+			perror("fopen error ");
+			exit(EXIT_FAILURE);
+		}
+	}
+	
 	Car *sortedArrayCars = SortArrayCars(shMem);
 	for (int i = 0; i < NUMBEROFCARS; i++)
 	{
-		if((fprintf(fp, "%d\n", sortedArrayCars[i].id)) < 0)
+		if (sortedArrayCars[i].id)
 		{
-			perror("fprintf error ");
-			exit(EXIT_FAILURE);
+			if((fprintf(fp, "%d\n", sortedArrayCars[i].id)) < 0)
+			{
+				perror("fprintf error ");
+				exit(EXIT_FAILURE);
+			}
 		}
 	}
 
@@ -283,6 +400,6 @@ int main(int argc, char *argv[]) // Add boolClassicWeekEnd in arg
 		exit(EXIT_FAILURE);
 	}
 	
-	printf("Finished\n");
+	printf("\033cFinished\n");
 	exit(EXIT_SUCCESS);
 }

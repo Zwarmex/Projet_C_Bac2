@@ -24,36 +24,33 @@ void EnterThePits(Car *car)
 	// printf("Car %d : P.\n", car->id);
 }
 
-Car *CarBuilder(int arrayId[])
+Car *CarBuilder(int arrayId[], int size)
 {
-	static Car arrayCars[NUMBEROFCARS];
+	static Car arrayCarsTMP[NUMBEROFCARS];
 
-	for (int i = 0; i < NUMBEROFCARS; i++)
+	for (int i = 0; i < size; i++)
 	{
-		arrayCars[i].id = arrayId[i];
-		arrayCars[i].totalTurnMS = 0;
-		arrayCars[i].boolContinueCompetition = 1;
-		InitialisationOrResetCar(&arrayCars[i]);
+		arrayCarsTMP[i].id = arrayId[i];
+		arrayCarsTMP[i].totalTurnMS = 0;
+		arrayCarsTMP[i].boolContinueCompetition = 1;
+		InitialisationCar(&arrayCarsTMP[i]);
 	}
 
-	return arrayCars;
+	return arrayCarsTMP;
 }
 
-void InitialisationOrResetCar(Car *car)
+void InitialisationCar(Car *car)
 {
-	for (int i = 0; i < NUMBEROFCARS; i++)
+	car->timeTurnMS = 0;
+	// car->lastTurnMS = 0;
+	car->state = 0; // Ready to starting
+	car->totalTurnMS = 0;
+	for (int j = 0; j < LENGTHARRAY(car->timeSectionMS); j++)
 	{
-
-		car->timeTurnMS = 0;
-		// car->lastTurnMS = 0;
-		car->state = 0; // Ready to starting
-		car->totalTurnMS = 0;
-		for (int j = 0; j < LENGTHARRAY(car->timeSectionMS); j++)
-		{
-			car->timeSectionMS[j] = 0;
-			car->bestTimeSectionMS[j] = 0;
-		}
+		car->timeSectionMS[j] = 0;
+		car->bestTimeSectionMS[j] = 0;
 	}
+
 }
 
 void DoRace(Car *car, int minutes, Car *shMem)
@@ -61,7 +58,7 @@ void DoRace(Car *car, int minutes, Car *shMem)
 	int boolContinueTesting = 1, upperTimeMaxMS = 45000, lowerTimeMinMS = 25000;
 	
 	// Reset the car before the race
-	InitialisationOrResetCar(car);
+	InitialisationCar(car);
 	
 	// While true continue turn testing
 	while (boolContinueTesting && car->state == 0 && car->totalTurnMS < minutes*60*1000)
@@ -123,37 +120,6 @@ void DoRace(Car *car, int minutes, Car *shMem)
 		}
 	}
 }
- 
-// Function to perform Sort array of cars
-Car *SortArrayCars(Car *arrayCars)
-{
-	static Car copyArrayCars[NUMBEROFCARS];
-	// Copy the array of cars into a new one.
-	for (int i = 0; i < NUMBEROFCARS; i++)
-	{
-		copyArrayCars[i] = arrayCars[i];
-	}
-	
-    // One by one move boundary of unsorted subarray
-    for (int i = 0; i < NUMBEROFCARS - 1; i++) 
-	{
-        // Find the minimum element in unsorted array
-        int min_idx = i;
-
-        for (int j = i + 1; j < NUMBEROFCARS; j++)
-		{
-            if (copyArrayCars[j].bestTimeTurnMS < copyArrayCars[min_idx].bestTimeTurnMS)
-			{
-                min_idx = j;
-			}
-		} 
-        // Swap the found minimum element with the first element
-		Car temp = copyArrayCars[min_idx];
-		copyArrayCars[min_idx] = copyArrayCars[i];
-		copyArrayCars[i] = temp;
-    }
-	return copyArrayCars;
-}
 
 float MSToSeconds(int MS)
 {
@@ -201,6 +167,8 @@ void EndOfProgramParent()
 void EndOfProgramChild()
 {
 	shmdt(shMem);
+	sem_post(semaChildId);
+	sem_post(semaParentId);
 	sem_unlink(semaChildName);
 	sem_unlink(semaParentName);
 	exit(EXIT_SUCCESS);

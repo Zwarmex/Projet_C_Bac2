@@ -1,4 +1,4 @@
-void PrintScore(Car *arrayCars)
+void PrintScore(Car *arrayCars, int size)
 {
 	// Sort the array of cars
 	Car *sortedArrayCars = SortArrayCars(arrayCars);
@@ -6,7 +6,7 @@ void PrintScore(Car *arrayCars)
     // Put the cursor on row 2 column 1
     printf("\033c\033[4m\033[47m\033[30mCar\t\tS1\t\tS2\t\tS3\t\tBest TT\t\t\tPIT\t\tOUT\033[m\033[2;H");
 
-	for (int i = 0; i < NUMBEROFCARS; i++)
+	for (int i = 0; i < size; i++)
 	{
 		Car *car = (Car *) (&sortedArrayCars[i]);
 		char *arrayBuffersTime[5];
@@ -82,47 +82,33 @@ char *returnBestTime(int timeMS, char *buff)
     return buff;
 }
 
-// void WhileChildrenAreBusy()
-// {
-//     if(sem_wait(semaParentId) < 0)
-//     {
-//         perror("sem_wait parent error ");
-//         exit(EXIT_FAILURE);
-//     }
+// Function to perform Sort array of cars
+Car *SortArrayCars(Car *arrayCars)
+{
+	static Car copyArrayCars[NUMBEROFCARS];
+	// Copy the array of cars into a new one.
+	for (int i = 0; i < NUMBEROFCARS; i++)
+	{
+		copyArrayCars[i] = arrayCars[i];
+	}
+	
+    // One by one move boundary of unsorted subarray
+    for (int i = 0; i < NUMBEROFCARS - 1; i++) 
+	{
+        // Find the minimum element in unsorted array
+        int minId = i;
+        for (int j = i + 1; j < NUMBEROFCARS; j++)
+        {
+            if (copyArrayCars[j].bestTimeTurnMS < copyArrayCars[minId].bestTimeTurnMS && copyArrayCars[j].bestTimeTurnMS != 0)
+            {
+                minId = j;
+            }
+        }
 
-//     if (sem_wait(semaChildId) < 0)
-//     {
-//         perror("sem_wait parent error ");
-//         exit(EXIT_FAILURE);
-//     }
-
-//     int value;
-
-//     if (sem_getvalue(semaParentId, &value) < 0)
-//     {
-//         perror("sem_getvalue parent error ");
-//         exit(EXIT_FAILURE);
-//     }
-//     while (value > 0)
-//     {
-//         if(sem_wait(semaParentId) < 0)
-//         {
-//             perror("sem_wait parent error ");
-//             exit(EXIT_FAILURE);
-//         }
-
-//         if (sem_getvalue(semaParentId, &value) < 0)
-//         {
-//             perror("sem_getvalue parent error ");
-//             exit(EXIT_FAILURE);
-//         }
-//     }
-
-//     PrintScore(shMem);
-
-//     if (sem_post(semaChildId) < 0)
-//     {
-//         perror("sem_post parent error ");
-//         exit(EXIT_FAILURE);
-//     }
-// }
+        // Swap the found minimum element with the actual element
+		Car temp = copyArrayCars[minId];
+		copyArrayCars[minId] = copyArrayCars[i];
+		copyArrayCars[i] = temp;
+    }
+	return copyArrayCars;
+}
