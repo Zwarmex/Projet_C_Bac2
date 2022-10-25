@@ -213,6 +213,12 @@ int main(int argc, char *argv[]) // Add boolClassicWeekEnd in arg
 
 		int arrayCarsId[NUMBEROFCARS], counter = 0;	
 		FILE *P3File = fopen("ResultSaves/P3.txt", "r");
+		if (!P3File)
+		{
+			perror("fopen error ");
+			exit(EXIT_FAILURE);
+		}
+		
 		char currentline[3];
 
 		while (fgets(currentline, sizeof(currentline), P3File) != NULL) 
@@ -220,12 +226,22 @@ int main(int argc, char *argv[]) // Add boolClassicWeekEnd in arg
 			if (*currentline != '\n')
 			{					
 				// printf("got line: %s\n", currentline);
-				arrayCarsId[counter] = (int)currentline;
+				arrayCarsId[counter] = atoi(currentline);
 				counter++;
 			}
 		}
+		if(fclose(P3File) != 0)
+		{
+			perror("fclose error ");
+			exit(EXIT_FAILURE);
+		}
 
-		fclose(P3File);
+		// Create array of cars
+		if (!(arrayCars = CarBuilder(arrayCarsId)))
+		{
+			printf("CarBuilder error");
+			exit(EXIT_FAILURE);
+		}
 		
 		// For each child
 		for (int i = 0; i < NUMBEROFCARS; i++)
@@ -255,14 +271,8 @@ int main(int argc, char *argv[]) // Add boolClassicWeekEnd in arg
 					exit(EXIT_FAILURE);
 				}
 				
-				// Create array of cars
-				// if (!(arrayCars = CarBuilder(arrayCarsId)))
-				// {
-				// 	printf("CarBuilder error");
-				// 	exit(EXIT_FAILURE);
-				// }
 
-				// DoRace(&arrayCars[i], 2, &shMem[i]);
+				DoRace(&arrayCars[i], 2, &shMem[i]);
 
 				// Child have to not make another child
 				exit(EXIT_SUCCESS);
@@ -279,8 +289,8 @@ int main(int argc, char *argv[]) // Add boolClassicWeekEnd in arg
 			exit(EXIT_FAILURE);
 		}
 
-		// while minimum a child is alive 
 		int waitRespons, waitStatus;
+		// while minimum a child is alive 
 		while ((waitRespons = waitpid(-1, &waitStatus, WNOHANG)) !=-1)
 		{
 			// break if children are dead
@@ -340,32 +350,11 @@ int main(int argc, char *argv[]) // Add boolClassicWeekEnd in arg
 
 		printf("\033c\n");
 		FILE *fp;
-		if (strcmp(argv[1], "P1") == 0)
-		{
-			if (!(fp = fopen("ResultSaves/P1.txt", "w")))
+		if (!(fp = fopen("ResultSaves/Q1.txt", "w")))
 			{
 				perror("fopen error ");
 				exit(EXIT_FAILURE);
 			}
-		} 
-		
-		if (strcmp(argv[1], "P2") == 0)
-		{
-			if (!(fp = fopen("ResultSaves/P2.txt", "w")))
-			{
-				perror("fopen error ");
-				exit(EXIT_FAILURE);
-			}
-		} 
-
-		if (strcmp(argv[1], "P3") == 0)
-		{
-			if (!(fp = fopen("ResultSaves/P3.txt", "w")))
-			{
-				perror("fopen error ");
-				exit(EXIT_FAILURE);
-			}
-		}
 
 		Car *sortedArrayCars = SortArrayCars(shMem);
 		for (int i = 0; i < NUMBEROFCARS; i++)
