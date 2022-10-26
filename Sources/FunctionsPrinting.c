@@ -99,8 +99,9 @@ Car *SortArrayCars(Car *arrayCars)
         int minId = i;
         for (int j = i + 1; j < NUMBER_OF_CARS; j++)
         {
-            int bestTimeJ = (copyArrayCars[j].bestTimeTurnMS == 0)?INT_MAX:copyArrayCars[j].bestTimeTurnMS;
-            if (bestTimeJ < copyArrayCars[minId].bestTimeTurnMS)
+            int bestTimeJ = (copyArrayCars[j].bestTimeTurnMS == 0) ? INT_MAX : copyArrayCars[j].bestTimeTurnMS;
+            int bestTimeMinId = (copyArrayCars[minId].bestTimeTurnMS == 0) ? INT_MAX : copyArrayCars[minId].bestTimeTurnMS;
+            if (bestTimeJ < bestTimeMinId)
             {
                 minId = j;
             }
