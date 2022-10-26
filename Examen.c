@@ -10,6 +10,8 @@
 #include <sys/stat.h>
 #include <sys/prctl.h>
 #include <wait.h>
+#include <limits.h>
+
 #include "Headers/FunctionsCars.h"
 #include "Headers/FunctionsPrinting.h"
 
@@ -429,7 +431,7 @@ int main(int argc, char *argv[]) // Add boolClassicWeekEnd in arg
 	int waitRespons, waitStatus;
 	struct timespec ts;
 	ts.tv_sec = 0;
-    ts.tv_nsec = 100000000;
+    ts.tv_nsec = 100000000; // 100 ms
 	
 	// while minimum a child is alive 
 	while ((waitRespons = waitpid(-1, &waitStatus, WNOHANG)) !=-1)
