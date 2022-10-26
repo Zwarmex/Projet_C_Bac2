@@ -427,84 +427,75 @@ int main(int argc, char *argv[]) // Add boolClassicWeekEnd in arg
 	}
 
 	int waitRespons, waitStatus;
+	struct timespec ts;
+	ts.tv_sec = 0;
+    ts.tv_nsec = 100000000;
+	
 	// while minimum a child is alive 
 	while ((waitRespons = waitpid(-1, &waitStatus, WNOHANG)) !=-1)
 	{
-		// break if children are dead
-		if ((waitRespons = waitpid(-1, &waitStatus, WNOHANG)) == -1)
-		{
-			break;
+		// Add a timout ont the semaphore 
+		if (sem_timedwait(semaParentId, &ts) == -1)
+		{	
+			// Check if children are not dead
+			if ((waitRespons = waitpid(-1, &waitStatus, WNOHANG)) == -1)
+			{
+				break;
+			}			
 		}
-		
-		// Wait that a child wrote in shm
-		if(sem_wait(semaParentId) < 0)
-		{
-			perror("sem_wait parent error ");
-			exit(EXIT_FAILURE);
-		}
-
-		// break if children are dead
-		if ((waitRespons = waitpid(-1, &waitStatus, WNOHANG)) == -1)
-		{
-			break;
-		}
-
-		// Wait for read the shm
-		if (sem_wait(semaChildId) < 0)
-		{
-			perror("sem_wait parent error ");
-			exit(EXIT_FAILURE);
-		}
-
-		int value;
-		if (sem_getvalue(semaParentId, &value) < 0)
-		{
-			perror("sem_getvalue parent error ");
-			exit(EXIT_FAILURE);
-		}
-
-		// Decrementing sema parent 
-		while (value > 0)
-		{
-			if(sem_wait(semaParentId) < 0)
+		else{
+			// Wait for read the shm
+			if (sem_wait(semaChildId) < 0)
 			{
 				perror("sem_wait parent error ");
 				exit(EXIT_FAILURE);
 			}
+
+			int value;
 			if (sem_getvalue(semaParentId, &value) < 0)
 			{
 				perror("sem_getvalue parent error ");
 				exit(EXIT_FAILURE);
 			}
-		}
-		// Critical section
 
-		if (strcmp(argv[1], "P1") == 0 || strcmp(argv[1], "P2") == 0 || strcmp(argv[1], "P3") == 0 || strcmp(argv[1], "Q1") == 0)
-		{
-			PrintScore(shMem, NUMBER_OF_CARS);
-		}
-		
-		else if (strcmp(argv[1], "Q2") == 0)
-		{
-			PrintScore(shMem, NUMBER_OF_CARS_Q2);
-		}
-		
-		else if (strcmp(argv[1], "Q3") == 0 || strcmp(argv[1], "Race") == 0)
-		{
-			PrintScore(shMem, NUMBER_OF_CARS_Q3);
-		}
+			// Decrementing sema parent 
+			while (value > 0)
+			{
+				if(sem_wait(semaParentId) < 0)
+				{
+					perror("sem_wait parent error ");
+					exit(EXIT_FAILURE);
+				}
+				
+				if (sem_getvalue(semaParentId, &value) < 0)
+				{
+					perror("sem_getvalue parent error ");
+					exit(EXIT_FAILURE);
+				}
+			}
+			// Critical section
 
-		// Unlock the shm
-		if (sem_post(semaChildId) < 0)
-		{
-			perror("sem_post parent error ");
-			exit(EXIT_FAILURE);
-		}
-		
-		// break if children are dead
-		if ((waitRespons = waitpid(-1, &waitStatus, WNOHANG)) == -1)
-		{
-			break;
+			if (strcmp(argv[1], "P1") == 0 || strcmp(argv[1], "P2") == 0 || strcmp(argv[1], "P3") == 0 || strcmp(argv[1], "Q1") == 0)
+			{
+				PrintScore(shMem, NUMBER_OF_CARS);
+			}
+			
+			else if (strcmp(argv[1], "Q2") == 0)
+			{
+				PrintScore(shMem, NUMBER_OF_CARS_Q2);
+			}
+			
+			else if (strcmp(argv[1], "Q3") == 0 || strcmp(argv[1], "Race") == 0)
+			{
+				PrintScore(shMem, NUMBER_OF_CARS_Q3);
+			}
+
+			// Unlock the shm
+			if (sem_post(semaChildId) < 0)
+			{
+				perror("sem_post parent error ");
+				exit(EXIT_FAILURE);
+			}
 		}
 	}
 		
