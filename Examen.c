@@ -410,6 +410,7 @@ int main(int argc, char *argv[]) // Add boolClassicWeekEnd in arg
 			}
 		}
 	}
+	
 	else
 	{
 		printf("No race choosen\n");
@@ -445,7 +446,8 @@ int main(int argc, char *argv[]) // Add boolClassicWeekEnd in arg
 				break;
 			}			
 		}
-		else{
+		else
+		{
 			// Wait for read the shm
 			if (sem_wait(semaChildId) < 0)
 			{
