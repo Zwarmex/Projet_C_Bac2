@@ -20,7 +20,7 @@ void EndOfSession(Car *car)
 void EnterThePits(Car *car)
 {
 	car->timeSectionMS[2] += RandomNumber(20000, 28000);
-	car->state = 2;
+	// car->state = 2;
 	// printf("Car %d : P.\n", car->id);
 }
 
@@ -79,7 +79,7 @@ void DoRace(Car *car, int minutes, Car *shMem)
 			}
 
 			// if the car is doing a better time 
-			if (!car->bestTimeSectionMS[i]|| car->bestTimeSectionMS[i] > car->timeSectionMS[i])
+			if (!car->bestTimeSectionMS[i] || car->bestTimeSectionMS[i] > car->timeSectionMS[i])
 			{
 				car->bestTimeSectionMS[i] = car->timeSectionMS[i];
 			}

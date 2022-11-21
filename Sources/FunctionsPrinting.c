@@ -20,10 +20,10 @@ void PrintScore(Car *arrayCars, int size)
 			}
 		}
 		
-		printf("%d		%s		%s		%s		%s		%s		%s      %s\r\n", 
+		printf("%d		%s		%s		%s		%s		%s		%s\r\n", 
 		car->id, returnBestTime(car->timeSectionMS[0], arrayBuffersTime[0]), returnBestTime(car->timeSectionMS[1], arrayBuffersTime[1]), 
 		returnBestTime(car->timeSectionMS[2], arrayBuffersTime[2]), returnBestTime(car->bestTimeTurnMS, arrayBuffersTime[3]), 
-		(car->state == 2)?"True":"False", (car->state == 1)?"True":"False", returnBestTime(car->totalTurnMS, arrayBuffersTime[4]));
+		(car->state == 2)?"True":"False", (car->state == 1)?"True":"False");
 
 		for (int i = 0; i < 5; i++)
 		{

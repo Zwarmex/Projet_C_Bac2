@@ -1,11 +1,12 @@
 {
     "configurations": [
+        
         {
             "name": "Debug file",
             "type": "cppdbg",
             "request": "launch",
             "program": "${fileDirname}/${fileBasenameNoExtension}",
-            "args": ["P3", "2"],
+            "args": ["Q3", "6"],
             "stopAtEntry": false,
             "cwd": "${fileDirname}",
             "environment": [],

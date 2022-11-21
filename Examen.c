@@ -60,7 +60,6 @@ int main(int argc, char *argv[]) // Add boolClassicWeekEnd in arg
 			// Child (a car)
 			if (pidFork == 0 )
 			{
-
 				prctl(PR_SET_PDEATHSIG, SIGHUP);
 				signal(SIGHUP, EndOfProgramChild);
 				atexit(EndOfProgramChild);
