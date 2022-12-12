@@ -6,12 +6,13 @@ void PrintScore(Car *arrayCars, int size)
     // Put the cursor on row 2 column 1
     printf("\033c\033[4m\033[47m\033[30mCar\t\tS1\t\tS2\t\tS3\t\tBest TT\t\t\tPIT\t\tOUT\033[m\033[2;H");
 
+    #define NUMBEROFBUFFER 4
 	for (int i = 0; i < size; i++)
 	{
 		Car *car = (Car *) (&sortedArrayCars[i]);
-		char *arrayBuffersTime[5];
+		char *arrayBuffersTime[NUMBEROFBUFFER];
         int row = 2;
-		for (int i = 0; i < 5; i++)
+		for (int i = 0; i < NUMBEROFBUFFER; i++)
 		{
 			if(!(arrayBuffersTime[i] = malloc(sizeof(":") * 3 + sizeof(int) * 4)))
 			{
@@ -25,11 +26,12 @@ void PrintScore(Car *arrayCars, int size)
 		returnBestTime(car->timeSectionMS[2], arrayBuffersTime[2]), returnBestTime(car->bestTimeTurnMS, arrayBuffersTime[3]), 
 		(car->state == 2)?"True":"False", (car->state == 1)?"True":"False");
 
-		for (int i = 0; i < 5; i++)
+		for (int i = 0; i < NUMBEROFBUFFER; i++)
 		{
 			free(arrayBuffersTime[i]);
 		}
 	}
+
 }
 
 char *returnBestTime(int timeMS, char *buff)
