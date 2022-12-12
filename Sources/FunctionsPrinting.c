@@ -32,6 +32,17 @@ void PrintScore(Car *arrayCars, int size)
 		}
 	}
 
+    char *arrayBuffersBestTime[1];
+    for (int i = 0; i < 1; i++)
+    {
+        if(!(arrayBuffersBestTime[i] = malloc(sizeof(":") * 3 + sizeof(int) * 4)))
+        {
+            perror("malloc error ");
+            exit(EXIT_FAILURE);
+        }
+    }
+
+    printf("Best TT : %s\n", returnBestTime(sortedArrayCars[0].bestTimeTurnMS, arrayBuffersBestTime[0]));
 }
 
 char *returnBestTime(int timeMS, char *buff)
