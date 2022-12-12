@@ -1,5 +1,4 @@
-#define CARTIMEBUFFER 4
-#define BESTTIMEBUFFER 4
+
 
 void PrintScore(Car *arrayCars, int size)
 {
@@ -7,13 +6,13 @@ void PrintScore(Car *arrayCars, int size)
 	Car *sortedArrayCars = SortArrayCars(arrayCars);
 
     // Put the cursor on row 2 column 1
-    printf("\033c\033[4m\033[47m\033[30mCar\t\tS1\t\tS2\t\tS3\t\tBest TT\t\t\tPIT\t\tOUT\033[m\033[2;H");
+    printf("\033c\033[4m\033[47m\033[30mCar\t\tS1\t\tS2\t\tS3\t\tBest TT\t\t\tPIT\t\tOUT\t\tDIFF\033[m\033[2;H");
 
 	for (int i = 0; i < size; i++)
 	{
 		Car *car = (Car *) (&sortedArrayCars[i]);
-		char *arrayBuffersTime[CARTIMEBUFFER];
-		for (int j = 0; j < CARTIMEBUFFER; j++)
+		char *arrayBuffersTime[CAR_TIME_BUFFER];
+		for (int j = 0; j < CAR_TIME_BUFFER; j++)
 		{
 			if(!(arrayBuffersTime[j] = malloc(sizeof(":") * 3 + sizeof(int) * 4)))
 			{
@@ -21,39 +20,52 @@ void PrintScore(Car *arrayCars, int size)
 				exit(EXIT_FAILURE);
 			}
 		}
-		
-		printf("%d		%s		%s		%s		%s		%s		%s\r\n", 
-		car->id, returnBestTime(car->timeSectionMS[0], arrayBuffersTime[0]),
-        returnBestTime(car->timeSectionMS[1], arrayBuffersTime[1]),
-		returnBestTime(car->timeSectionMS[2], arrayBuffersTime[2]),
-        returnBestTime(car->bestTimeTurnMS, arrayBuffersTime[3]),
-		(car->state == 2)?"True":"False", (car->state == 1)?"True":"False");
+		if (i != 0)
+        {
+            Car *previousCar = (Car *) (&sortedArrayCars[i - 1]);
+            printf("%d		%s		%s		%s		%s		%s		%s      +%s\r\n",
+               car->id, returnBestTime(car->timeSectionMS[0], arrayBuffersTime[0]),
+               returnBestTime(car->timeSectionMS[1], arrayBuffersTime[1]),
+               returnBestTime(car->timeSectionMS[2], arrayBuffersTime[2]),
+               returnBestTime(car->bestTimeTurnMS, arrayBuffersTime[3]),
+               (car->state == 2) ? "True" : "False", (car->state == 1) ? "True" : "False",
+               returnBestTime(car->bestTimeTurnMS - previousCar->bestTimeTurnMS, arrayBuffersTime[4]));
+        }
+        else
+        {
+            printf("%d		%s		%s		%s		%s		%s		%s\r\n",
+                car->id, returnBestTime(car->timeSectionMS[0], arrayBuffersTime[0]),
+                returnBestTime(car->timeSectionMS[1], arrayBuffersTime[1]),
+                returnBestTime(car->timeSectionMS[2], arrayBuffersTime[2]),
+                returnBestTime(car->bestTimeTurnMS, arrayBuffersTime[3]),
+                (car->state == 2) ? "True" : "False", (car->state == 1) ? "True" : "False");
+        }
 
-		for (int j = 0; j < CARTIMEBUFFER; j++)
+		for (int j = 0; j < CAR_TIME_BUFFER; j++)
 		{
 			free(arrayBuffersTime[j]);
 		}
 	}
 
-    char *arrayBuffersBestTime[BESTTIMEBUFFER];
-    int bestS1 = 0, bestS2 = 0, bestS3 = 0;
+    char *arrayBuffersBestTime[BEST_TIME_BUFFER];
+    int bestS1 = INT_MAX, bestS2 = INT_MAX, bestS3 = INT_MAX;
     for (int i = 0; i < size; ++i)
     {
         Car *car = (Car *) (&sortedArrayCars[i]);
-        if (bestS1 < car->bestTimeSectionMS[0])
+        if (bestS1 > car->bestTimeSectionMS[0])
         {
             bestS1 = car->bestTimeSectionMS[0];
         }
-        if (bestS2 < car->bestTimeSectionMS[1])
+        if (bestS2 > car->bestTimeSectionMS[1])
         {
             bestS2 = car->bestTimeSectionMS[1];
         }
-        if (bestS3 < car->bestTimeSectionMS[2])
+        if (bestS3 > car->bestTimeSectionMS[2])
         {
             bestS3 = car->bestTimeSectionMS[2];
         }
     }
-    for (int i = 0; i < BESTTIMEBUFFER; i++)
+    for (int i = 0; i < BEST_TIME_BUFFER; i++)
     {
         if(!(arrayBuffersBestTime[i] = malloc(sizeof(":") * 3 + sizeof(int) * 4)))
         {
@@ -92,7 +104,6 @@ char *returnBestTime(int timeMS, char *buff)
     {
         char minutesTime[3];
         sprintf(minutesTime, "%02d", minutes);
-
 
         strcat(buff, minutesTime);
         strcat(buff, ":");

@@ -9,6 +9,7 @@ typedef struct Car
 	int bestTimeTurnMS;
 	int totalTurnMS;
 	int boolContinueCompetition;
+    int numberOfTurn;
 }Car;
 
 void EndOfSession(Car *car)
@@ -24,7 +25,7 @@ void EnterThePits(Car *car)
 	// printf("Car %d : P.\n", car->id);
 }
 
-Car *CarBuilder(int arrayId[], int size)
+Car *CarBuilder(const int arrayId[], int size)
 {
 	static Car arrayCarsTMP[NUMBER_OF_CARS];
 
@@ -45,6 +46,7 @@ void InitialisationCar(Car *car)
 	// car->lastTurnMS = 0;
 	car->state = 0; // Ready to starting
 	car->totalTurnMS = 0;
+    car->numberOfTurn = 0;
 	for (int j = 0; j < LENGTH_ARRAY(car->timeSectionMS); j++)
 	{
 		car->timeSectionMS[j] = 0;
@@ -53,7 +55,7 @@ void InitialisationCar(Car *car)
 
 }
 
-void DoRace(Car *car, int minutes, Car *shMem)
+void DoRace(Car *car, int minutes,Car *shMem, int numberOfTurnsMax, int boolRace)
 {
 	int boolContinueTesting = 1, upperTimeMaxMS = 45000, lowerTimeMinMS = 25000;
 	
@@ -61,7 +63,7 @@ void DoRace(Car *car, int minutes, Car *shMem)
 	InitialisationCar(car);
 	
 	// While true continue turn testing
-	while (boolContinueTesting && car->state == 0 && car->totalTurnMS < minutes*60*1000)
+	while (boolContinueTesting && car->state == 0 && car->totalTurnMS < minutes*60*1000 && car->numberOfTurn < numberOfTurnsMax)
 	{
 		//Reset the time of the turn
 		car->timeTurnMS = 0;
@@ -71,7 +73,7 @@ void DoRace(Car *car, int minutes, Car *shMem)
 		{
 			// Car time is randomize
 			car->timeSectionMS[i] = RandomNumber(lowerTimeMinMS, upperTimeMaxMS);
-			int seconds = (int)(MSToSeconds(car->timeSectionMS[i])/5);
+			int seconds = (int)(car->timeSectionMS[i]/1000/5);
 			if(sleep(seconds) == seconds)
 			{
 				perror("sleep error ");
@@ -94,6 +96,7 @@ void DoRace(Car *car, int minutes, Car *shMem)
 		// kill(getppid(), SIGINT);
 
 		car->totalTurnMS += car->timeTurnMS;
+        car->numberOfTurn ++;
 
 		// car->lastTurnMS = car->timeTurnMS;
 
@@ -104,27 +107,22 @@ void DoRace(Car *car, int minutes, Car *shMem)
 		
 		WriteInSharedMemory(shMem, car);
 
-		// if(RandomNumber(0, 100) == 1)
-		// {
-		// 	boolContinueTesting = 0;
-		// }
+        if(!boolRace && RandomNumber(0, 100) == 1)
+        {
+            boolContinueTesting = 0;
+        }
 
 		if(RandomNumber(0, 500) == 1)
 		{
 			EndOfSession(car);
 		}
 
-		if(RandomNumber(0, 300) == 1)
-		{
-			EnterThePits(car);
-		}
+		if(RandomNumber(0, 300) == 1) {
+            EnterThePits(car);
+        }
 	}
 }
 
-float MSToSeconds(int MS)
-{
-	return MS/1000;
-}
 
 int RandomNumber(int min, int max)
 {

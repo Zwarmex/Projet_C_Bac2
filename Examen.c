@@ -23,7 +23,7 @@ int main(int argc, char *argv[]) // Add boolClassicWeekEnd in arg
 	}
 	
 	// Initialisation of variables
-	int minutesOfRace = atoi(argv[2]);
+	int minutesOfRace = atoi(argv[2]), numberOfTurnMax = atoi(argv[3]);
 	Car *arrayCars;
 	semaChildId = sem_open(semaChildName, O_CREAT, S_IRUSR | S_IWUSR, 1);
 	semaParentId = sem_open(semaParentName, O_CREAT, S_IRUSR | S_IWUSR, 0);
@@ -82,7 +82,7 @@ int main(int argc, char *argv[]) // Add boolClassicWeekEnd in arg
 					exit(EXIT_FAILURE);
 				}
 
-				DoRace(&arrayCars[i], minutesOfRace, &shMem[i]);
+				DoRace(&arrayCars[i], minutesOfRace, &shMem[i], numberOfTurnMax, 0);
 
 				// Child have to not make another child
 				exit(EXIT_SUCCESS);
@@ -161,7 +161,7 @@ int main(int argc, char *argv[]) // Add boolClassicWeekEnd in arg
 					exit(EXIT_FAILURE);
 				}
 				
-				DoRace(&arrayCars[i], minutesOfRace, &shMem[i]);
+				DoRace(&arrayCars[i], minutesOfRace, &shMem[i], numberOfTurnMax, 0);
 
 				// Child have to not make another child
 				exit(EXIT_SUCCESS);
@@ -241,7 +241,7 @@ int main(int argc, char *argv[]) // Add boolClassicWeekEnd in arg
 					exit(EXIT_FAILURE);
 				}
 				
-				DoRace(&arrayCars[i], minutesOfRace, &shMem[i]);
+				DoRace(&arrayCars[i], minutesOfRace, &shMem[i],numberOfTurnMax, 0);
 
 				// Child have to not make another child
 				exit(EXIT_SUCCESS);
@@ -321,7 +321,7 @@ int main(int argc, char *argv[]) // Add boolClassicWeekEnd in arg
 					exit(EXIT_FAILURE);
 				}
 				
-				DoRace(&arrayCars[i], minutesOfRace, &shMem[i]);
+				DoRace(&arrayCars[i], minutesOfRace, &shMem[i],numberOfTurnMax, 0);
 
 				// Child have to not make another child
 				exit(EXIT_SUCCESS);
@@ -401,7 +401,7 @@ int main(int argc, char *argv[]) // Add boolClassicWeekEnd in arg
 					exit(EXIT_FAILURE);
 				}
 				
-				DoRace(&arrayCars[i], minutesOfRace, &shMem[i]);
+				DoRace(&arrayCars[i], minutesOfRace, &shMem[i], numberOfTurnMax, 1);
 
 				// Child have to not make another child
 				exit(EXIT_SUCCESS);
@@ -578,6 +578,42 @@ int main(int argc, char *argv[]) // Add boolClassicWeekEnd in arg
 			}
 		}
 	}
+
+    char *arrayBuffersBestTime[BEST_TIME_BUFFER];
+    int bestS1 = INT_MAX, bestS2 = INT_MAX, bestS3 = INT_MAX;
+    for (int i = 0; i < NUMBER_OF_CARS; ++i)
+    {
+        Car *car = (Car *) (&sortedArrayCars[i]);
+        if (bestS1 > car->bestTimeSectionMS[0])
+        {
+            bestS1 = car->bestTimeSectionMS[0];
+        }
+        if (bestS2 > car->bestTimeSectionMS[1])
+        {
+            bestS2 = car->bestTimeSectionMS[1];
+        }
+        if (bestS3 > car->bestTimeSectionMS[2])
+        {
+            bestS3 = car->bestTimeSectionMS[2];
+        }
+    }
+    for (int i = 0; i < BEST_TIME_BUFFER; i++)
+    {
+        if(!(arrayBuffersBestTime[i] = malloc(sizeof(":") * 3 + sizeof(int) * 4)))
+        {
+            perror("malloc error ");
+            exit(EXIT_FAILURE);
+        }
+    }
+    if((fprintf(fp, "Best TT : %s\nBest S1 : %s\nBest S2 : %s\nBest S2 : %s\n",
+           returnBestTime(sortedArrayCars[0].bestTimeTurnMS, arrayBuffersBestTime[0]),
+           returnBestTime(bestS1, arrayBuffersBestTime[1]),
+           returnBestTime(bestS2, arrayBuffersBestTime[2]),
+           returnBestTime(bestS3, arrayBuffersBestTime[3]))) < 0)
+			{
+				perror("f_print_f error ");
+				exit(EXIT_FAILURE);
+			}
 
 	if((fclose(fp)) != 0)
 	{

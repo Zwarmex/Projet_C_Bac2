@@ -1,16 +1,15 @@
-// If the file hasn't been include 
+// If the file hasn't been included
 #ifndef functionsCars
 
 	// You can include the file
 	#define functionsCars
 		
 	typedef struct Car Car;
-	Car *CarBuilder(int arrayId[], int size);
+	Car *CarBuilder(const int arrayId[], int size);
 	void EndOfSession(Car *car);
 	void EnterThePits(Car *car);
-	void DoRace(Car *car, int minutes, Car *shMem);
+	void DoRace(Car *car, int minutes, Car *shMem, int numberOfTurnsMax, int boolRace);
 	void InitialisationCar(Car *car);
-	float MSToSeconds(int MS);
 	void WriteInSharedMemory(Car *shMem, Car *car);
 	int RandomNumber(int min, int max);
 	void EndOfProgramParent();
@@ -25,6 +24,8 @@
 	#define NUMBER_OF_CARS 20
 	#define NUMBER_OF_CARS_Q2 15
 	#define NUMBER_OF_CARS_Q3 10
+    #define CAR_TIME_BUFFER 5
+    #define BEST_TIME_BUFFER 4
 	#define LENGTH_ARRAY(array) (sizeof(array)/sizeof(*array))
 	#include "../Sources/FunctionsCars.c"
 
