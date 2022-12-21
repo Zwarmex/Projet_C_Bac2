@@ -19,14 +19,41 @@ int main(int argc, char *argv[]) // Add boolClassicWeekEnd in arg
 	if (argc < 2)
 	{
 		printf("No race section given !\n");
-		exit(EXIT_SUCCESS);
+		exit(EXIT_FAILURE);
 	}
+
+	// if (argc < 3)
+	// {
+	// 	printf("No minutes max given !\n");
+	// 	exit(EXIT_FAILURE);
+	// }
 	
-	// Initialisation of variables
-	int minutesOfRace = atoi(argv[2]), numberOfTurnMax = atoi(argv[3]);
+	// if (argc < 4)
+	// {
+	// 	printf("No number of turns max given !\n");
+	// 	exit(EXIT_FAILURE);
+	// }
+
+	char *endptr;
+	int minutesOfRace = strtol(argv[2], &endptr, 10), numberOfTurnMax = strtol(argv[3], &endptr, 10);
 	Car *arrayCars;
 	semaChildId = sem_open(semaChildName, O_CREAT, S_IRUSR | S_IWUSR, 1);
 	semaParentId = sem_open(semaParentName, O_CREAT, S_IRUSR | S_IWUSR, 0);
+	
+	// Initialisation of variables
+
+
+	if (*endptr != '\0')
+	{
+		printf("No minutes max given !\n");
+		exit(EXIT_FAILURE);
+	}
+	
+	if (*endptr != '\0')
+	{
+		printf("No number of turns max given !\n");
+		exit(EXIT_FAILURE);
+	}
 
 	if (semaChildId == SEM_FAILED || semaParentId == SEM_FAILED)
 	{
@@ -73,8 +100,6 @@ int main(int argc, char *argv[]) // Add boolClassicWeekEnd in arg
 					exit(EXIT_FAILURE);
 				}
 
-				int arrayCarsId[NUMBER_OF_CARS] = {44, 63, 1, 11, 55, 16, 4, 3, 14, 31, 10, 22, 5, 18, 6, 23, 77, 24, 47, 9};	
-				
 				// Create array of cars
 				if (!(arrayCars = CarBuilder(arrayCarsId, NUMBER_OF_CARS)))
 				{
@@ -332,7 +357,107 @@ int main(int argc, char *argv[]) // Add boolClassicWeekEnd in arg
 	// If Race
 	else if (strcmp(argv[1], "Race") == 0)
 	{
-		int shmSize = sizeof(Car) * NUMBER_OF_CARS_Q3;
+		int shmSize = sizeof(Car) * NUMBER_OF_CARS;
+		// Get id for the sh m
+		if((shmId = shmget(IPC_PRIVATE, shmSize, IPC_CREAT | 0666)) < 0)
+		{
+			perror("shm get error ");
+			exit(EXIT_FAILURE);
+		}
+
+		int arrayFirstCarsId[NUMBER_OF_CARS], counter = 0;	
+		FILE *PFile = fopen("ResultSaves/Q3.txt", "r");
+		if (!PFile)
+		{
+			perror("open error ");
+			exit(EXIT_FAILURE);
+		}
+		
+		char currentline[3];
+
+		while ((fgets(currentline, sizeof(currentline), PFile) != NULL) && (counter < NUMBER_OF_CARS_Q3)) 
+		{
+			if (*currentline != '\n')
+			{					
+				// printf("got line: %s\n", currentline);
+				arrayFirstCarsId[counter] = atoi(currentline);
+				counter++;
+			}
+		}
+
+		int number_of_car_found = 0;
+
+		for (int i = 0; i < NUMBER_OF_CARS_Q3; i++)
+		{
+			int found = 0;
+			for (int j = 0; j < NUMBER_OF_CARS; j++)
+			{
+				if (arrayCarsId[i] == arrayFirstCarsId[j])
+				{
+					found = 1;
+					break;
+				}
+			}
+			if (!found)
+			{
+				arrayFirstCarsId[(int)(NUMBER_OF_CARS/2) + number_of_car_found] = arrayCarsId[i];
+			}
+		}
+		
+		
+		
+		if(fclose(PFile) != 0)
+		{
+			perror("close error ");
+			exit(EXIT_FAILURE);
+		}
+
+		// Create array of cars
+		if (!(arrayCars = CarBuilder(arrayCarsId, NUMBER_OF_CARS)))
+		{
+			printf("CarBuilder error");
+			exit(EXIT_FAILURE);
+		}
+		
+		// For each child
+		for (int i = 0; i < NUMBER_OF_CARS; i++)
+		{
+			int pidFork = fork();
+			// Fork and check errors
+			if (pidFork == -1)
+			{
+				perror("fork error ");
+				exit(EXIT_FAILURE);
+			}
+
+			// Child (a car)
+			if (pidFork == 0 )
+			{
+				prctl(PR_SET_PDEATHSIG, SIGHUP);
+				signal(SIGHUP, EndOfProgramChild);
+				atexit(EndOfProgramChild);
+
+				// Put seed number in rand with pid of the processes
+				srand(time(NULL) ^ getpid());
+				
+				// Get the sh m from the id
+				if ((shMem = (Car *) shmat(shmId, NULL, 0)) < 0)
+				{
+					perror("shm-at error ");
+					exit(EXIT_FAILURE);
+				}
+				
+				DoRace(&arrayCars[i], minutesOfRace, &shMem[i], numberOfTurnMax, 1);
+
+				// Child have to not make another child
+				exit(EXIT_SUCCESS);
+			}
+		}
+	}
+	
+	else if (strcmp(argv[1], "Sprint") == 0)
+	{
+		int shmSize = sizeof(Car) * NUMBER_OF_CARS;
 		// Get id for the sh m
 		if((shmId = shmget(IPC_PRIVATE, shmSize, IPC_CREAT | 0666)) < 0)
 		{
@@ -408,7 +533,7 @@ int main(int argc, char *argv[]) // Add boolClassicWeekEnd in arg
 			}
 		}
 	}
-	
+
 	else
 	{
 		printf("No race chosen\n");
