@@ -1,5 +1,6 @@
-Examen
-.vscode
-.idea
-Backup
-Test
+/Examen
+/.vscode/
+/.idea/
+/Backup/
+/Test/
+/cmake-build-debug/
