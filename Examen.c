@@ -22,38 +22,37 @@ int main(int argc, char *argv[]) // Add boolClassicWeekEnd in arg
 		exit(EXIT_FAILURE);
 	}
 
-	// if (argc < 3)
-	// {
-	// 	printf("No minutes max given !\n");
-	// 	exit(EXIT_FAILURE);
-	// }
+	if (argc < 3)
+	{
+		printf("No minutes max given !\n");
+		exit(EXIT_FAILURE);
+	}
 	
-	// if (argc < 4)
-	// {
-	// 	printf("No number of turns max given !\n");
-	// 	exit(EXIT_FAILURE);
-	// }
+	if (argc < 4)
+	{
+		printf("No number of turns max given !\n");
+		exit(EXIT_FAILURE);
+	}
 
 	char *endptr;
-	int minutesOfRace = strtol(argv[2], &endptr, 10), numberOfTurnMax = strtol(argv[3], &endptr, 10);
+	int minutesOfRace = strtol(argv[2], &endptr, 10);
+	if (endptr == argv[2]) 
+	{
+		printf("No valid minutes max given !\n");
+		exit(EXIT_FAILURE);
+	}
+	int numberOfTurnMax = strtol(argv[3], &endptr, 10);
+	if (endptr == argv[3]) 
+	{
+		printf("No valid number of turns max given !\n");
+		exit(EXIT_FAILURE);
+	}
 	Car *arrayCars;
 	semaChildId = sem_open(semaChildName, O_CREAT, S_IRUSR | S_IWUSR, 1);
 	semaParentId = sem_open(semaParentName, O_CREAT, S_IRUSR | S_IWUSR, 0);
 	
 	// Initialisation of variables
 
-
-	if (*endptr != '\0')
-	{
-		printf("No minutes max given !\n");
-		exit(EXIT_FAILURE);
-	}
-	
-	if (*endptr != '\0')
-	{
-		printf("No number of turns max given !\n");
-		exit(EXIT_FAILURE);
-	}
 
 	if (semaChildId == SEM_FAILED || semaParentId == SEM_FAILED)
 	{
