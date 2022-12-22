@@ -6,7 +6,7 @@ void PrintScore(Car *arrayCars, int size)
 	Car *sortedArrayCars = SortArrayCars(arrayCars);
 
     // Put the cursor on row 2 column 1
-    printf("\033c\033[4m\033[47m\033[30mCar\t\tS1\t\tS2\t\tS3\t\tBest TT\t\t\tPIT\t\tOUT\t\tDIFF\033[m\033[2;H");
+    printf("\033c\033[4m\033[47m\033[30mCar\tS1\tS2\t\tS3\t\tBest TT\t\t\tPIT\t\tOUT\t\tDIFF\033[m\033[2;H");
 
 	for (int i = 0; i < size; i++)
 	{
@@ -23,7 +23,7 @@ void PrintScore(Car *arrayCars, int size)
 		if (i != 0)
         {
             Car *previousCar = (Car *) (&sortedArrayCars[i - 1]);
-            printf("%d		%s		%s		%s		%s		%s		%s      +%s\r\n",
+            printf("%d	%s	%s	%s		%s		%s		%s      +%s\r\n",
                car->id, returnBestTime(car->timeSectionMS[0], arrayBuffersTime[0]),
                returnBestTime(car->timeSectionMS[1], arrayBuffersTime[1]),
                returnBestTime(car->timeSectionMS[2], arrayBuffersTime[2]),
@@ -33,7 +33,7 @@ void PrintScore(Car *arrayCars, int size)
         }
         else
         {
-            printf("%d		%s		%s		%s		%s		%s		%s\r\n",
+            printf("%d	%s	%s	%s		%s		%s		%s\r\n",
                 car->id, returnBestTime(car->timeSectionMS[0], arrayBuffersTime[0]),
                 returnBestTime(car->timeSectionMS[1], arrayBuffersTime[1]),
                 returnBestTime(car->timeSectionMS[2], arrayBuffersTime[2]),
@@ -74,7 +74,7 @@ void PrintScore(Car *arrayCars, int size)
         }
     }
 
-    printf("Best TT : %s\nBest S1 : %s\nBest S2 : %s\nBest S2 : %s\n",
+    printf("Best TT : %s\nBest S1 : %s\nBest S2 : %s\nBest S3 : %s\n",
            returnBestTime(sortedArrayCars[0].bestTimeTurnMS, arrayBuffersBestTime[0]),
            returnBestTime(bestS1, arrayBuffersBestTime[1]),
            returnBestTime(bestS2, arrayBuffersBestTime[2]),

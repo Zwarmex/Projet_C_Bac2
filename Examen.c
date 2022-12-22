@@ -36,7 +36,7 @@ int main(int argc, char *argv[]) // Add boolClassicWeekEnd in arg
 
 	char *endptr;
 	int minutesOfRace = strtol(argv[2], &endptr, 10);
-	if (endptr == argv[2]) 
+	if (endptr != "") 
 	{
 		printf("No valid minutes max given !\n");
 		exit(EXIT_FAILURE);
@@ -631,7 +631,7 @@ int main(int argc, char *argv[]) // Add boolClassicWeekEnd in arg
 	{
 		if (!(fp = fopen("ResultSaves/P1.txt", "w")))
 		{
-			perror("open error ");
+			perror("open error in : P1.txt ");
 			exit(EXIT_FAILURE);
 		}
 	} 
@@ -640,7 +640,7 @@ int main(int argc, char *argv[]) // Add boolClassicWeekEnd in arg
 	{
 		if (!(fp = fopen("ResultSaves/P2.txt", "w")))
 		{
-			perror("open error ");
+			perror("open error in : P2.txt ");
 			exit(EXIT_FAILURE);
 		}
 	} 
@@ -649,7 +649,7 @@ int main(int argc, char *argv[]) // Add boolClassicWeekEnd in arg
 	{
 		if (!(fp = fopen("ResultSaves/P3.txt", "w")))
 		{
-			perror("open error ");
+			perror("open error in : P3.txt ");
 			exit(EXIT_FAILURE);
 		}
 	}
@@ -658,7 +658,7 @@ int main(int argc, char *argv[]) // Add boolClassicWeekEnd in arg
 	{
 		if (!(fp = fopen("ResultSaves/Q1.txt", "w")))
 		{
-			perror("open error ");
+			perror("open error in : Q1.txt ");
 			exit(EXIT_FAILURE);
 		}
 	}
@@ -667,7 +667,7 @@ int main(int argc, char *argv[]) // Add boolClassicWeekEnd in arg
 	{
 		if (!(fp = fopen("ResultSaves/Q2.txt", "w")))
 		{
-			perror("open error ");
+			perror("open error in : Q2.txt ");
 			exit(EXIT_FAILURE);
 		}
 	}
@@ -676,7 +676,7 @@ int main(int argc, char *argv[]) // Add boolClassicWeekEnd in arg
 	{
 		if (!(fp = fopen("ResultSaves/Q3.txt", "w")))
 		{
-			perror("open error ");
+			perror("open error in : Q3.txt");
 			exit(EXIT_FAILURE);
 		}
 	}
@@ -685,9 +685,24 @@ int main(int argc, char *argv[]) // Add boolClassicWeekEnd in arg
 	{
 		if (!(fp = fopen("ResultSaves/Race.txt", "w")))
 		{
-			perror("open error ");
+			perror("open error in : Race.txt");
 			exit(EXIT_FAILURE);
 		}
+	}
+
+	else if (strcmp(argv[1], "Sprint") == 0)
+	{
+		if (!(fp = fopen("ResultSaves/Sprint.txt", "w")))
+		{
+			perror("open error in : Sprint.txt");
+			exit(EXIT_FAILURE);
+		}
+	}
+
+	else
+	{
+		print("No file found\n");
+		exit(EXIT_FAILURE);
 	}
 	
 	Car *sortedArrayCars = SortArrayCars(shMem);
