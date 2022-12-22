@@ -11,6 +11,7 @@
 #include <sys/prctl.h>
 #include <wait.h>
 #include <limits.h>
+#include <ctype.h>
 #include "Headers/FunctionsCars.h"
 #include "Headers/FunctionsPrinting.h"
 
@@ -698,7 +699,7 @@ int main(int argc, char *argv[])
 
 	else
 	{
-		print("No file found\n");
+		printf("No file found\n");
 		exit(EXIT_FAILURE);
 	}
 	
