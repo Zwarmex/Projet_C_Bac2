@@ -21,7 +21,7 @@ void EndOfSession(Car *car)
 void EnterThePits(Car *car)
 {
 	car->timeSectionMS[2] += RandomNumber(20000, 28000);
-	// car->state = 2;
+	car->state = 2;
 	// printf("Car %d : P.\n", car->id);
 }
 
@@ -63,7 +63,7 @@ void DoRace(Car *car, int minutes,Car *shMem, int numberOfTurnsMax, int boolRace
 	InitialisationCar(car);
 	
 	// While true continue turn testing
-	while (boolContinueTesting && car->state == 0 && car->totalTurnMS < minutes*60*1000 && car->numberOfTurn < numberOfTurnsMax)
+	while (boolContinueTesting && car->state != 1 && car->totalTurnMS < minutes*60*1000 && car->numberOfTurn < numberOfTurnsMax)
 	{
 		//Reset the time of the turn
 		car->timeTurnMS = 0;
@@ -112,7 +112,7 @@ void DoRace(Car *car, int minutes,Car *shMem, int numberOfTurnsMax, int boolRace
             boolContinueTesting = 0;
         }
 
-		if(RandomNumber(0, 500) == 1)
+		if(RandomNumber(0, 50) == 1)
 		{
 			EndOfSession(car);
 		}

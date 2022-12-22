@@ -34,6 +34,7 @@ int main(int argc, char *argv[])
 		printf("No number of turns max given !\n");
 		exit(EXIT_FAILURE);
 	}
+	
 	char *endptr;
 	if (!check_int(argv[2]))
 	{
@@ -362,7 +363,7 @@ int main(int argc, char *argv[])
 			exit(EXIT_FAILURE);
 		}
 
-		int arrayFirstCarsId[NUMBER_OF_CARS], counter = 0;	
+		int arrayFirstCarsId[NUMBER_OF_CARS_Q3] = {0}, counter = 0;	
 		FILE *PFile = fopen("ResultSaves/Q3.txt", "r");
 		if (!PFile)
 		{
@@ -382,27 +383,34 @@ int main(int argc, char *argv[])
 			}
 		}
 
-		int number_of_car_found = 0;
-
-		for (int i = 0; i < NUMBER_OF_CARS_Q3; i++)
+		// Déclaration et initialisation du tableau "arrayCarsResults" à zéro
+		int arrayCarsResults[NUMBER_OF_CARS] = {0};
+		// Copie des éléments du tableau "arrayFirstCarsId" dans le tableau "arrayCarsResults"
+		for (int i = 0; i < 10; i++) 
 		{
-			int found = 0;
-			for (int j = 0; j < NUMBER_OF_CARS; j++)
+			arrayCarsResults[i] = arrayFirstCarsId[i];
+		}
+		
+		// Parcours du tableau "arrayCarsId" et ajout des éléments manquants au tableau "arrayCarsResults"
+		int index = NUMBER_OF_CARS_Q3; // index de départ pour ajouter les éléments au tableau "arrayCarsResults"
+		for (int i = 0; i < NUMBER_OF_CARS; i++) 
+		{
+			int found = 0; // flag pour indiquer si l'élément a été trouvé dans le tableau "arrayFirstCarsId"
+			for (int j = 0; j < 10; j++) 
 			{
-				if (arrayCarsId[i] == arrayFirstCarsId[j])
+				if (arrayCarsId[i] == arrayFirstCarsId[j]) 
 				{
 					found = 1;
 					break;
 				}
 			}
-			if (!found)
+			if (!found) 
 			{
-				arrayFirstCarsId[(int)(NUMBER_OF_CARS/2) + number_of_car_found] = arrayCarsId[i];
+				arrayCarsResults[index] = arrayCarsId[i];
+				index++;
 			}
 		}
-		
-		
-		
+
 		if(fclose(PFile) != 0)
 		{
 			perror("close error ");
@@ -410,7 +418,7 @@ int main(int argc, char *argv[])
 		}
 
 		// Create array of cars
-		if (!(arrayCars = CarBuilder(arrayCarsId, NUMBER_OF_CARS)))
+		if (!(arrayCars = CarBuilder(arrayCarsResults, NUMBER_OF_CARS)))
 		{
 			printf("CarBuilder error");
 			exit(EXIT_FAILURE);
@@ -599,7 +607,7 @@ int main(int argc, char *argv[])
 			}
 			// Critical section
 
-			if (strcmp(argv[1], "P1") == 0 || strcmp(argv[1], "P2") == 0 || strcmp(argv[1], "P3") == 0 || strcmp(argv[1], "Q1") == 0)
+			if (strcmp(argv[1], "P1") == 0 || strcmp(argv[1], "P2") == 0 || strcmp(argv[1], "P3") == 0 || strcmp(argv[1], "Q1") == 0 || strcmp(argv[1], "Race") == 0 || strcmp(argv[1], "Sprint") == 0)
 			{
 				PrintScore(shMem, NUMBER_OF_CARS);
 			}
@@ -609,7 +617,7 @@ int main(int argc, char *argv[])
 				PrintScore(shMem, NUMBER_OF_CARS_Q2);
 			}
 			
-			else if (strcmp(argv[1], "Q3") == 0 || strcmp(argv[1], "Race") == 0)
+			else if (strcmp(argv[1], "Q3") == 0)
 			{
 				PrintScore(shMem, NUMBER_OF_CARS_Q3);
 			}
