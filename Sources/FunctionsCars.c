@@ -123,6 +123,19 @@ void DoRace(Car *car, int minutes,Car *shMem, int numberOfTurnsMax, int boolRace
 	}
 }
 
+// Function to check if a string is a valid integer
+int check_int(char *str) 
+{
+    int i;
+    // Check if the rest of the string consists solely of digits
+    for (i = 0; i < strlen(str); i++) {
+        if (!isdigit(str[i])) {
+            return 0;
+        }
+    }
+    return 1;
+}
+
 
 int RandomNumber(int min, int max)
 {

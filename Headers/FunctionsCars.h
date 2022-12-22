@@ -14,6 +14,7 @@
 	int RandomNumber(int min, int max);
 	void EndOfProgramParent();
 	void EndOfProgramChild();
+	int check_int(char *str);
 	
 	#define NUMBER_OF_CARS 20
 	#define NUMBER_OF_CARS_Q2 15

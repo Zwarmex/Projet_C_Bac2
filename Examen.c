@@ -14,7 +14,7 @@
 #include "Headers/FunctionsCars.h"
 #include "Headers/FunctionsPrinting.h"
 
-int main(int argc, char *argv[]) // Add boolClassicWeekEnd in arg
+int main(int argc, char *argv[])
 {
 	if (argc < 2)
 	{
@@ -33,27 +33,24 @@ int main(int argc, char *argv[]) // Add boolClassicWeekEnd in arg
 		printf("No number of turns max given !\n");
 		exit(EXIT_FAILURE);
 	}
-
 	char *endptr;
-	int minutesOfRace = strtol(argv[2], &endptr, 10);
-	if (endptr != "") 
+	if (!check_int(argv[2]))
 	{
 		printf("No valid minutes max given !\n");
 		exit(EXIT_FAILURE);
 	}
-	int numberOfTurnMax = strtol(argv[3], &endptr, 10);
-	if (endptr == argv[3]) 
+	int minutesOfRace = strtol(argv[2], &endptr, 10);
+	if (!check_int(argv[3]))
 	{
 		printf("No valid number of turns max given !\n");
 		exit(EXIT_FAILURE);
 	}
+	// Initialisation of variables
+	int numberOfTurnMax = strtol(argv[3], &endptr, 10);
 	Car *arrayCars;
 	semaChildId = sem_open(semaChildName, O_CREAT, S_IRUSR | S_IWUSR, 1);
 	semaParentId = sem_open(semaParentName, O_CREAT, S_IRUSR | S_IWUSR, 0);
 	
-	// Initialisation of variables
-
-
 	if (semaChildId == SEM_FAILED || semaParentId == SEM_FAILED)
 	{
 		perror("sem_open error ");
